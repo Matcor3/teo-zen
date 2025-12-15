@@ -106,16 +106,23 @@ canvas {
     border-top: 2px solid var(--blue-deep);
     border-bottom: 2px solid var(--blue-deep);
 }
+
 .parallax-bg {
-    background-image: url('images/earth.jpg'); 
+    /* --- MODIFICA QUESTA RIGA QUI SOTTO --- */
+    /* Assicurati che il nome tra virgolette sia ESATTAMENTE quello del tuo file */
+    background-image: url('images/terra.jpg'); 
+    
     background-size: cover;
     background-position: center;
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    z-index: -1;
-    background-attachment: fixed;
-    filter: brightness(0.5) contrast(1.2);
+    z-index: -1; /* Importante: sta DIETRO al testo */
+    background-attachment: fixed; /* Questo crea l'effetto parallasse su PC */
+    
+    /* Filtri per renderla spaziale e far leggere il testo sopra */
+    filter: brightness(0.4) contrast(1.2) saturate(1.2);
 }
+
 .content-box {
     text-align: center;
     z-index: 1;

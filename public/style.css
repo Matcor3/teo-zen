@@ -1,0 +1,366 @@
+/* public/style.css */
+
+/* DEFINIZIONE COLORI (La tua Palette) */
+:root {
+    --blue-azure: #2D7EE0;
+    --blue-purple: #4E2DE0;
+    --blue-deep: #2D45E0;
+    --blue-cyan: #2DB7E0;   /* Ottimo per i dettagli luminosi */
+    --purple-violet: #8A2DE0;
+    --blue-soft: #7785E0;
+    
+    --bg-dark: #050510;      /* Quasi nero, per lo sfondo */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    min-height: 100vh;
+    box-sizing: border-box;
+    font-family: 'Courier New', Courier, monospace;
+    
+    /* Sfondo con leggera sfumatura spaziale */
+    background: radial-gradient(circle at center, #1a1a2e, #000);
+    color: var(--blue-soft); /* Colore testo base */
+    overflow-x: hidden;
+}
+
+/* Navigazione */
+nav {
+    position: fixed;
+    top: env(safe-area-inset-top);
+    width: 100%;
+    z-index: 1000;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+    backdrop-filter: blur(5px); /* Effetto vetro sfocato */
+}
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    padding: 0;
+    margin: 0;
+}
+nav a {
+    color: var(--blue-cyan); /* Usa il ciano per i link */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px var(--blue-deep); /* Bagliore */
+    transition: color 0.3s;
+}
+nav a:hover {
+    color: var(--purple-violet);
+}
+
+/* SEZIONE 1: Canvas */
+#hero {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* 1. Carica l'immagine (metti il nome del tuo file) */
+    background-image: url('images/universe-bg.jpg'); 
+    
+    /* 2. Fai in modo che copra tutto senza deformarsi */
+    background-size: cover; 
+    
+    /* 3. Centra l'immagine */
+    background-position: center; 
+    
+    /* 4. BLOCCALA (Opzionale): crea un effetto piacevole quando scrolli via */
+    background-attachment: fixed;
+}
+
+/* 5. IL TRUCCO DEL MENTORE: L'Overlay Scuro */
+/* Creiamo una tendina nera semitrasparente sopra la foto ma sotto le particelle */
+#hero::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* 0.6 = 60% di nero */
+    z-index: 0; /* Sta sotto al canvas */
+}
+
+/* Assicuriamo che il canvas stia SOPRA l'immagine e l'overlay */
+canvas {
+    z-index: 1; 
+}
+
+/* SEZIONE 2: Parallasse Terra */
+#parallax {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-top: 2px solid var(--blue-deep);
+    border-bottom: 2px solid var(--blue-deep);
+}
+.parallax-bg {
+    background-image: url('images/earth.jpg'); 
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1;
+    background-attachment: fixed;
+    filter: brightness(0.5) contrast(1.2);
+}
+.content-box {
+    text-align: center;
+    z-index: 1;
+    background: rgba(0,0,0,0.6);
+    padding: 40px;
+    border: 1px solid var(--blue-purple);
+    box-shadow: 0 0 20px rgba(45, 126, 224, 0.2); /* Bagliore blu */
+}
+.content-box h2 {
+    font-size: 3rem;
+    letter-spacing: 5px;
+    margin-bottom: 0;
+    color: var(--blue-cyan);
+    text-shadow: 0 0 10px var(--blue-azure);
+}
+.subtitle {
+    font-size: 0.9rem;
+    color: var(--blue-soft);
+    max-width: 600px;
+    margin: 10px auto;
+    font-style: italic;
+}
+
+/* SEZIONE 3: Identità Sticky */
+#identity-section {
+    height: 300vh; 
+    position: relative;
+    background-color: var(--bg-dark);
+}
+.sticky-container {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.identity-card {
+    position: absolute;
+    opacity: 0;
+    transition: all 0.8s ease;
+    text-align: center;
+    transform: translateY(50px) scale(0.9);
+    filter: blur(5px);
+}
+.identity-card.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+}
+.photo-frame {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    margin: 0 auto 30px;
+    background-size: cover;
+    background-position: center;
+    border: 4px solid var(--purple-violet);
+    box-shadow: 0 0 30px var(--blue-deep);
+}
+.identity-card h1 {
+    font-size: 2.5rem;
+    color: var(--blue-cyan);
+    margin-bottom: 10px;
+}
+.bio {
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.8;
+    color: #ccc;
+    font-size: 1.1rem;
+}
+
+/* SEZIONE 4: Lavori */
+#work {
+    padding: 80px 20px;
+    background: radial-gradient(circle at center, #111, #000);
+    min-height: 100vh;
+}
+#work h2 {
+    text-align: center;
+    color: var(--purple-violet);
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+}
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+.work-item {
+    height: 250px;
+    background-color: #0c0c0c;
+    border: 1px solid var(--blue-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+.work-item:hover {
+    transform: translateY(-10px);
+    border-color: var(--blue-cyan);
+    box-shadow: 0 10px 30px rgba(45, 183, 224, 0.3);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 30px;
+    background-color: #000;
+    color: var(--blue-soft);
+    border-top: 1px solid var(--blue-purple);
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+/* --- RESPONSIVE DESIGN (MOBILE) --- */
+@media (max-width: 768px) {
+    
+    /* Navigazione più compatta */
+    nav ul {
+        gap: 15px;
+        font-size: 0.7rem;
+    }
+    
+    /* Titoli più piccoli per non "urlare" in faccia all'utente */
+    .content-box h2 {
+        font-size: 1.8rem;
+        letter-spacing: 2px;
+    }
+    
+    /* Identità: riduciamo la foto e il testo */
+    .photo-frame {
+        width: 150px;
+        height: 150px;
+    }
+    .identity-card h1 {
+        font-size: 1.8rem;
+    }
+    .bio {
+        font-size: 0.9rem;
+        padding: 0 15px; /* Margine laterale per non toccare i bordi */
+    }
+
+    /* Griglia lavori: 1 colonna su mobile */
+    .gallery {
+        grid-template-columns: 1fr; 
+    }
+    
+    /* Parallasse mobile: su alcuni telefoni 'fixed' dà problemi, lo semplifichiamo */
+    .parallax-bg {
+        background-attachment: scroll; 
+    }
+}
+/* --- EFFETTO GLITCH TEXT (EVERYTHING AND NOTHING) --- */
+
+/* Contenitore del testo */
+.glitch-text {
+    position: relative;
+    margin: 0 auto 20px auto; /* Centrato */
+    padding: 0;
+    font-size: 6em; /* Grandezza base PC */
+    font-family: var(--font-titles); /* Usa il font Orbitron che abbiamo scelto */
+    color: transparent; /* Il testo base è invisibile, vediamo solo gli span */
+    text-transform: uppercase;
+    line-height: 1; /* Importante per allineare i tagli */
+    cursor: pointer; /* Fa capire che si può interagire */
+}
+
+/* SPAN 1: La metà superiore */
+.glitch-text span:nth-child(1) {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    color: #fff; /* Colore testo normale */
+    transition: transform 0.5s;
+    /* Taglia la parte bassa */
+    clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+    overflow: hidden;
+    text-shadow: 0 0 10px var(--blue-deep); /* Bagliore */
+}
+
+/* Hover Span 1: Si sposta in alto */
+.glitch-text:hover span:nth-child(1) {
+    transform: translateY(-20px);
+    color: var(--blue-cyan); /* Cambia colore quando si apre */
+}
+
+/* SPAN 2: La metà inferiore */
+.glitch-text span:nth-child(2) {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    color: #fff;
+    transition: transform 0.5s;
+    /* Taglia la parte alta */
+    clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+    overflow: hidden;
+    text-shadow: 0 0 10px var(--blue-deep);
+}
+
+/* Hover Span 2: Si sposta in basso */
+.glitch-text:hover span:nth-child(2) {
+    transform: translateY(20px);
+    color: var(--blue-cyan);
+}
+
+/* SPAN 3: Il messaggio segreto centrale (AND NOTHING) */
+.glitch-text span:nth-child(3) {
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%) scaleY(0); /* Parte schiacciato (invisibile) */
+    width: 100%; 
+    
+    /* Stile della barra centrale */
+    background: var(--purple-violet); 
+    color: #fff;
+    
+    font-family: var(--font-body); /* Usiamo il font più leggibile per il piccolo testo */
+    font-size: 0.25em; /* Più piccolo del titolo */
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    text-align: center;
+    padding: 5px 0;
+    transition: transform 0.5s;
+    box-shadow: 0 0 20px var(--purple-violet); /* Bagliore viola */
+    z-index: 2;
+}
+
+/* Hover Span 3: Si espande e diventa visibile */
+.glitch-text:hover span:nth-child(3) {
+    transform: translate(-50%, -50%) scaleY(1);
+}
+
+/* --- ADATTAMENTO MOBILE --- */
+@media (max-width: 768px) {
+    .glitch-text {
+        font-size: 3em; /* Riduciamo drasticamente su mobile */
+    }
+    
+    /* Riduciamo lo spostamento su schermi piccoli */
+    .glitch-text:hover span:nth-child(1) { transform: translateY(-10px); }
+    .glitch-text:hover span:nth-child(2) { transform: translateY(10px); }
+}

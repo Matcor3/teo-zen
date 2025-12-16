@@ -260,39 +260,261 @@ canvas {
 }
 
 /* SEZIONE 4: Lavori */
+/* public/style.css - NUOVO STILE WORK (POSTER EFFECT) */
+
 #work {
-    padding: 80px 20px;
-    background: radial-gradient(circle at center, #111, #000);
+    position: relative; 
+    z-index: 100;
+    background: #050510;
+    padding: 100px 20px;
     min-height: 100vh;
+    box-shadow: 0 -20px 50px #000;
+    /* Centriamo tutto il contenuto */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
 #work h2 {
+    color: var(--blue-cyan);
+    font-size: 3rem;
+    margin-bottom: 80px;
+    text-shadow: 0 0 20px var(--blue-purple);
     text-align: center;
-    color: var(--purple-violet);
-    font-size: 2.5rem;
-    margin-bottom: 50px;
 }
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+
+/* Contenitore generale che impila i progetti */
+.work-container {
+    display: flex;
+    flex-direction: column;
+    gap: 60px; /* Spazio tra un progetto e l'altro */
+    width: 100%;
+    max-width: 900px; /* Larghezza massima dell'area */
 }
-.work-item {
-    height: 250px;
-    background-color: #0c0c0c;
+
+/* --- L'EFFETTO SPECIALE --- */
+
+.poster-wrapper {
+    position: relative;
+    height: 300px;
+    width: 100%; /* Occupa tutto lo spazio disponibile */
+    display: flex;
+    flex-direction: row;
+    text-decoration: none; /* Toglie la riga blu dai link */
+    cursor: pointer;
+    transition: all 400ms ease-in-out;
+}
+
+/* Il contenitore dell'immagine (La finestra) */
+.poster-image {
+    height: 300px;
+    width: 450px; /* Larghezza iniziale */
+    overflow: hidden; /* Maschera ciò che esce */
+    border-radius: 5px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     border: 1px solid var(--blue-deep);
+    transition: all 400ms ease-in-out;
+    position: relative;
+    z-index: 2; /* Sta sopra */
+}
+
+/* L'immagine vera e propria */
+.poster-image img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: all 400ms ease-in-out;
+    filter: grayscale(80%); /* Inizia in bianco e nero (stile dark) */
+}
+
+/* Il contenitore del Testo (A destra) */
+/* public/style.css - FIX TESTO TAGLIATO */
+
+/* Il contenitore del Testo (A destra) */
+.poster-header {
+    position: absolute;
+    left: 400px; 
+    top: 0;
+    height: 300px; /* Altezza fissa fondamentale */
+    width: 400px; 
+    overflow: hidden; /* Nasconde ciò che esce */
+    
+    /* Rimuoviamo il padding che potrebbe spingere il testo fuori */
+    padding: 0; 
+    padding-left: 50px; /* Solo spazio a sinistra */
+    
+    z-index: 1; 
+    pointer-events: none; /* Trucco: così il mouse non "sfarfalla" se tocchi il testo */
+}
+
+/* Il carrello che fa scorrere i titoli */
+.titles-slide {
+    display: flex;
+    flex-direction: column;
+    transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Movimento più fluido */
+}
+
+/* STILE DEL TESTO (CORRETTO) */
+.titles-slide h3 {
+    /* Misure della "scatola" del titolo */
+    display: flex;          /* Usiamo Flexbox... */
+    align-items: center;    /* ...per centrare verticalmente in modo perfetto */
+    justify-content: flex-start; /* Allineato a sinistra */
+    
+    height: 300px; /* Deve essere identico all'altezza del contenitore */
+    width: 100%;
+    
+    margin: 0; /* Rimuoviamo margini di default che spostano il testo */
+    padding: 0;
+    
+    /* Stile Font */
+    font-size: 50px; /* Riduciamo leggermente da 60 a 50 per sicurezza */
+    font-family: var(--font-titles);
+    text-transform: uppercase;
+    color: #fff;
+    white-space: nowrap; 
+    transition: all 400ms ease-in-out;
+}
+
+/* --- ANIMAZIONI HOVER (La Magia) --- */
+
+/* public/style.css - VERSIONE "OVERLAP ARTISTICO" */
+
+.poster-wrapper {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    margin-bottom: 80px; /* Spazio verticale tra i progetti */
+    display: flex;
+    align-items: center; /* Centra verticalmente */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 1. L'IMMAGINE (Sta SOTTO il testo: z-index 1) */
+.poster-image {
+    height: 300px;
+    width: 400px; /* Larghezza partenza */
+    
+    /* Posizionamento */
+    position: absolute; 
+    left: 0; 
+    
+    overflow: hidden;
+    border-radius: 4px;
+    border: 1px solid var(--blue-deep);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Movimento fluido */
+    
+    /* Filtri iniziali */
+    filter: grayscale(100%) brightness(0.6); 
+    z-index: 1; /* LIVELLO 1: Fondo */
+}
+
+.poster-image img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+/* 2. IL TESTO (Sta SOPRA l'immagine: z-index 2) */
+.poster-header {
+    position: absolute;
+    left: 250px; /* TRUCCO: Parte già sovrapposto all'immagine (400 - 250 = overlap) */
+    top: 0;
+    height: 300px;
+    width: 600px; /* Abbastanza largo per il testo enorme */
+    overflow: hidden; /* Nasconde il testo che esce (See Project) */
+    pointer-events: none; /* Il mouse passa attraverso il testo per attivare l'immagine */
+    z-index: 2; /* LIVELLO 2: Sopra */
+}
+
+.titles-slide {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* TITOLO 1: ENORME (CODING) */
+.titles-slide h3:nth-child(1) {
     display: flex;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.4s;
-    position: relative;
-    overflow: hidden;
+    height: 300px; /* Occupa tutto lo spazio */
+    
+    font-size: 100px; /* GIGANTE */
+    font-family: var(--font-titles);
+    font-weight: 900; /* Molto spesso */
+    letter-spacing: -2px; /* Lettere vicine */
+    color: #fff;
+    
+    /* Ombra per staccarlo dall'immagine sotto */
+    text-shadow: 5px 5px 0px rgba(0,0,0,0.5); 
+    opacity: 1;
+    transition: opacity 0.3s;
 }
-.work-item:hover {
-    transform: translateY(-10px);
+
+/* TITOLO 2: PICCOLO (SEE PROJECT) */
+.titles-slide h3:nth-child(2) {
+    display: flex;
+    align-items: center;
+    height: 300px;
+    
+    font-size: 20px; /* MOLTO PICCOLO */
+    font-family: var(--font-body); /* Font più leggibile */
+    letter-spacing: 5px; /* Molto spaziato */
+    font-weight: 700;
+    color: var(--blue-cyan); /* Colore acceso */
+    text-transform: uppercase;
+    
+    padding-left: 50px; /* Spostato un po' a destra */
+}
+
+/* --- ANIMAZIONI HOVER --- */
+
+/* L'immagine si allarga e prende colore */
+.poster-wrapper:hover .poster-image {
+    width: 750px; /* Si espande molto */
     border-color: var(--blue-cyan);
-    box-shadow: 0 10px 30px rgba(45, 183, 224, 0.3);
+    filter: grayscale(0%) brightness(1); /* Diventa colorata e luminosa */
+    box-shadow: 0 0 50px rgba(45, 183, 224, 0.15);
 }
+
+/* Zoom interno foto */
+.poster-wrapper:hover .poster-image img {
+    transform: scale(1.1);
+}
+
+/* Slide del testo verso l'alto */
+.poster-wrapper:hover .titles-slide {
+    transform: translateY(-300px); /* Mostra il secondo titolo */
+}
+
+/* --- MOBILE FIX --- */
+@media (max-width: 900px) {
+    .poster-wrapper {
+        flex-direction: column;
+        height: auto;
+        margin-bottom: 50px;
+    }
+    .poster-image {
+        position: relative; width: 100%; height: 250px; left: 0;
+    }
+    .poster-header {
+        position: relative; left: 0; width: 100%; height: auto;
+        margin-top: -40px; /* Sovrapposizione verticale su mobile */
+    }
+    .titles-slide h3:nth-child(1) {
+        font-size: 50px; height: auto; text-shadow: 0 0 10px #000;
+        justify-content: center;
+    }
+    .titles-slide h3:nth-child(2) {
+        display: none; /* Niente slide su mobile */
+    }
+    .poster-wrapper:hover .poster-image { width: 100%; }
+    .poster-wrapper:hover .titles-slide { transform: none; }
+}
+
 
 /* Footer */
 footer {

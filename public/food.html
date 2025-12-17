@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teo Zen | Food Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        body { background: #050510; padding-top: 100px; color: #fff; }
+        
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        /* La singola Card generata da JS */
+        .food-card {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .food-card:hover { transform: translateY(-10px); border-color: var(--blue-cyan); }
+        
+        .food-img { width: 100%; height: 250px; object-fit: cover; }
+        
+        .food-info { padding: 20px; }
+        .food-info h3 { margin: 0 0 10px 0; font-family: var(--font-titles); color: var(--blue-cyan); }
+        .food-info p { font-size: 0.9rem; color: #ccc; line-height: 1.4; }
+        
+        .tag { 
+            display: inline-block; background: #222; color: var(--purple-violet); 
+            padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; margin-top: 10px; margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <ul><li><a href="index.html">← HOME</a></li></ul>
+    </nav>
+
+    <h1 style="text-align:center; font-family:var(--font-titles); font-size:3rem;">FOOD LAB</h1>
+
+    <div class="food-grid" id="food-container">
+        </div>
+
+    <script src="data.js"></script> 
+    
+    <script>
+        // Prendiamo il contenitore dal DOM
+        const container = document.getElementById('food-container');
+
+        // Ciclo su ogni piatto nel file data.js
+        foodProjects.forEach(dish => {
+            
+            // Creiamo l'HTML per ogni piatto usando i dati
+            // Le virgolette inverse ` permettono di andare a capo e inserire variabili con ${}
+            const cardHTML = `
+                <div class="food-card">
+                    <img src="${dish.image}" alt="${dish.title}" class="food-img">
+                    <div class="food-info">
+                        <h3>${dish.title}</h3>
+                        <p>${dish.description}</p>
+                        ${dish.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Aggiungiamo la card al contenitore
+            container.innerHTML += cardHTML;
+        });
+    </script>
+
+</body>
+</html>

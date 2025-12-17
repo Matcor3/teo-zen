@@ -8,8 +8,9 @@
     --blue-cyan: #2DB7E0;   /* Ottimo per i dettagli luminosi */
     --purple-violet: #8A2DE0;
     --blue-soft: #7785E0;
-    
     --bg-dark: #050510;      /* Quasi nero, per lo sfondo */
+    --font-titles: 'Orbitron', sans-serif;  /* Per titoli e impatto */
+    --font-body: 'Montserrat', sans-serif;  /* Per testi lunghi */
 }
 
 body {
@@ -19,12 +20,15 @@ body {
     padding-bottom: env(safe-area-inset-bottom);
     min-height: 100vh;
     box-sizing: border-box;
-    font-family: 'Courier New', Courier, monospace;
+   font-family: var(--font-body);
     
     /* Sfondo con leggera sfumatura spaziale */
     background: radial-gradient(circle at center, #1a1a2e, #000);
     color: var(--blue-soft); /* Colore testo base */
     overflow-x: hidden;
+}
+h1, h2, h3, nav a, .identity-card h1 {
+    font-family: var(--font-titles);
 }
 
 /* Navigazione */

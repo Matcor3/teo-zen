@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teo Zen | Workshop</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- OVERRIDE STILE PROGETTAZIONE --- */
+        :root {
+            --font-titles: 'Space Mono', monospace;
+            --font-body: 'Space Mono', monospace;
+            
+            /* Palette Ingegneristica */
+            --blueprint-blue: #003366;
+            --blueprint-line: rgba(255, 255, 255, 0.15);
+            --safety-yellow: #FFD700; /* Giallo avviso */
+            --white: #ffffff;
+        }
+
+        body {
+            /* Sfondo Carta Millimetrata */
+            background-color: var(--blueprint-blue);
+            background-image: 
+                linear-gradient(var(--blueprint-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--blueprint-line) 1px, transparent 1px);
+            background-size: 40px 40px; /* Grandezza quadretti */
+            
+            color: var(--white);
+            font-family: var(--font-body);
+        }
+
+        /* Titolo Timbrato */
+        h1 {
+            font-family: var(--font-titles);
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            border: 4px solid var(--white);
+            display: inline-block;
+            padding: 10px 30px;
+            margin-bottom: 50px;
+            letter-spacing: -2px;
+            background: rgba(0,0,0,0.2);
+            /* Effetto Timbro */
+            transform: rotate(-2deg); 
+        }
+
+        nav { background: #002244; border-bottom: 2px solid var(--safety-yellow); }
+        nav a { font-family: var(--font-body); color: var(--safety-yellow) !important; text-shadow: none !important; -webkit-text-stroke: 0 !important; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 120px auto 50px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Griglia Progetti */
+        .blueprint-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 40px;
+            text-align: left;
+        }
+
+        /* CARD STILE SCHEDA TECNICA */
+        .tech-card {
+            border: 2px solid var(--white);
+            background: rgba(0, 51, 102, 0.8); /* Semi trasparente */
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        /* Dettagli tecnici decorativi agli angoli */
+        .tech-card::before {
+            content: '';
+            position: absolute; top: -5px; left: -5px;
+            width: 10px; height: 10px; border-top: 2px solid var(--safety-yellow); border-left: 2px solid var(--safety-yellow);
+        }
+        .tech-card::after {
+            content: '';
+            position: absolute; bottom: -5px; right: -5px;
+            width: 10px; height: 10px; border-bottom: 2px solid var(--safety-yellow); border-right: 2px solid var(--safety-yellow);
+        }
+
+        .tech-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.5); /* Ombra dura, non sfumata */
+            border-color: var(--safety-yellow);
+        }
+
+        .tech-img-box {
+            height: 250px;
+            border-bottom: 2px solid var(--white);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tech-img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: grayscale(100%) contrast(1.2); /* Foto in bianco e nero */
+            transition: 0.3s;
+        }
+        /* Hover: la foto diventa bluastra stile blueprint */
+        .tech-card:hover .tech-img {
+            filter: grayscale(100%) sepia(100%) hue-rotate(190deg) saturate(300%);
+        }
+
+        .tech-info { padding: 20px; }
+        
+        .tech-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px; margin-bottom: 10px;
+        }
+
+        .tech-title { font-size: 1.5rem; font-weight: 700; color: var(--safety-yellow); margin: 0; }
+        .tech-id { font-size: 0.8rem; color: #ccc; }
+
+        .tech-desc { font-size: 0.9rem; line-height: 1.5; color: #ddd; }
+
+        .tech-tags { margin-top: 15px; }
+        .tech-tag {
+            background: transparent;
+            border: 1px solid var(--safety-yellow);
+            color: var(--safety-yellow);
+            font-size: 0.7rem; padding: 2px 8px; margin-right: 5px;
+            text-transform: uppercase;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <ul><li><a href="index.html">/// MAIN_TERMINAL</a></li></ul>
+    </nav>
+
+    <div class="container">
+        <h1>PROTOTYPE LAB</h1>
+        
+        <div class="blueprint-grid" id="diy-container">
+            </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        const container = document.getElementById('diy-container');
+
+        // FILTRO: Mostriamo solo i progetti con category "diy"
+        const diyProjects = allProjects.filter(item => item.category === 'diy');
+
+        diyProjects.forEach((item, index) => {
+            // Generiamo un ID finto tipo "PRJ-01"
+            const projectID = `PRJ-0${index + 1}`;
+
+            container.innerHTML += `
+                <div class="tech-card">
+                    <div class="tech-img-box">
+                        <img src="${item.image}" class="tech-img">
+                    </div>
+                    <div class="tech-info">
+                        <div class="tech-header">
+                            <h3 class="tech-title">${item.title}</h3>
+                            <span class="tech-id">${projectID}</span>
+                        </div>
+                        <p class="tech-desc">${item.description}</p>
+                        <div class="tech-tags">
+                            ${item.tags.map(t => `<span class="tech-tag">[${t}]</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>

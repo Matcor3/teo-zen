@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teo Zen | Art Gallery</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* OVERRIDE RADICALE: Tutto Bianco */
+        :root {
+            --font-titles: 'Inter', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --bg-gallery: #ffffff;
+            --text-gallery: #000000;
+        }
+
+        body {
+            background: var(--bg-gallery);
+            color: var(--text-gallery);
+            font-family: var(--font-body);
+            padding-top: 0; /* Diverso dagli altri */
+        }
+
+        /* Navigazione Minimal (Nera su Bianco) */
+        nav { 
+            background: rgba(255,255,255,0.95); 
+            border-bottom: none;
+            box-shadow: none;
+            padding: 30px 0;
+        }
+        nav a { 
+            color: #000 !important; 
+            font-weight: 300;
+            text-shadow: none !important; 
+            -webkit-text-stroke: 0 !important;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        nav a:hover { font-weight: 600; }
+
+        /* Intestazione */
+        header {
+            text-align: center;
+            margin-top: 150px;
+            margin-bottom: 80px;
+        }
+        h1 {
+            font-family: var(--font-titles);
+            font-size: 5rem;
+            font-weight: 300; /* Sottile */
+            color: #000;
+            letter-spacing: -2px;
+            margin: 0;
+            text-shadow: none;
+        }
+        .subtitle { color: #666; font-size: 0.9rem; margin-top: 10px; font-style: normal; }
+
+        /* LAYOUT MASONRY (Pinterest Style) */
+        .gallery-container {
+            column-count: 3; /* 3 Colonne */
+            column-gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* La singola opera */
+        .art-piece {
+            break-inside: avoid; /* Non spezzare l'immagine a metà tra le colonne */
+            margin-bottom: 60px; /* Spazio sotto */
+            position: relative;
+            cursor: zoom-in;
+        }
+
+        .art-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: grayscale(100%); /* Inizia in bianco e nero */
+            transition: filter 0.5s ease;
+        }
+
+        /* Info a scomparsa */
+        .art-info {
+            margin-top: 15px;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+        .art-title { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; margin: 0; }
+        .art-desc { font-size: 0.8rem; color: #555; margin: 5px 0 0 0; }
+        .art-tags { font-size: 0.7rem; color: #999; margin-top: 5px; }
+
+        /* Effetti Hover */
+        .art-piece:hover .art-img { filter: grayscale(0%); }
+        .art-piece:hover .art-info { opacity: 1; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .gallery-container { column-count: 1; }
+            h1 { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <ul><li><a href="index.html">Close Gallery (Home)</a></li></ul>
+    </nav>
+
+    <header>
+        <h1>VISUAL_ART</h1>
+        <p class="subtitle">Selected works 2023-2025</p>
+    </header>
+
+    <div class="gallery-container" id="art-container">
+        </div>
+
+    <script src="data.js"></script>
+    <script>
+        const container = document.getElementById('art-container');
+        const artItems = allProjects.filter(item => item.category === 'art');
+
+        artItems.forEach(art => {
+            container.innerHTML += `
+                <div class="art-piece">
+                    <img src="${art.image}" class="art-img" alt="${art.title}">
+                    <div class="art-info">
+                        <h3 class="art-title">${art.title}</h3>
+                        <p class="art-desc">${art.description}</p>
+                        <div class="art-tags">${art.tags.join(' • ')}</div>
+                    </div>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>

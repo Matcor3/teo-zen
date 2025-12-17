@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teo Zen | System Root</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            --hacker-green: #0f0;
+            --hacker-bg: #000;
+            --hacker-dim: #003300;
+        }
+
+        body {
+            background-color: var(--hacker-bg);
+            color: var(--hacker-green);
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            padding-top: 80px;
+        }
+
+        /* EFFETTO SCANLINE (Vecchia TV) */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        nav { background: #001100; border-bottom: 1px solid var(--hacker-green); }
+        nav a { color: var(--hacker-green) !important; text-shadow: 0 0 5px var(--hacker-green) !important; -webkit-text-stroke: 0 !important; font-family: 'Share Tech Mono', monospace; }
+
+        h1 {
+            text-align: center;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 4rem;
+            color: var(--hacker-green);
+            text-shadow: 0 0 10px var(--hacker-green), 0 0 20px var(--hacker-green);
+            margin-bottom: 10px;
+        }
+        
+        .sys-msg { text-align: center; color: var(--hacker-green); margin-bottom: 50px; opacity: 0.8; }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+
+        /* Griglia */
+        .terminal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Card Terminale */
+        .terminal-window {
+            border: 2px solid var(--hacker-dim);
+            background: rgba(0, 10, 0, 0.9);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+            transition: 0.3s;
+        }
+
+        .terminal-window:hover {
+            border-color: var(--hacker-green);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+            transform: scale(1.02);
+        }
+
+        /* Barra titolo finta */
+        .terminal-header {
+            background: var(--hacker-dim);
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            color: var(--hacker-green);
+        }
+
+        .terminal-body {
+            padding: 15px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .code-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 1px solid var(--hacker-dim);
+            filter: grayscale(100%) contrast(1.5) brightness(0.8);
+        }
+        .terminal-window:hover .code-img { filter: none; border-color: var(--hacker-green); }
+
+        .code-info h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
+            text-shadow: none;
+            color: #fff;
+        }
+
+        .code-desc {
+            font-size: 0.9rem;
+            color: #ccc;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .code-tags span {
+            border: 1px solid var(--hacker-green);
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            margin-right: 5px;
+            color: var(--hacker-green);
+        }
+
+        /* Effetto scrittura codice */
+        .cmd-line::before { content: "> "; color: var(--hacker-green); }
+
+        @media(max-width: 600px) { .terminal-grid { grid-template-columns: 1fr; } .terminal-body { flex-direction: column; } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <ul><li><a href="index.html">cd /home/teozen</a></li></ul>
+    </nav>
+
+    <h1>DEV_AREA</h1>
+    <p class="sys-msg">System Status: <span style="color:#fff">ONLINE</span> <span class="blink">_</span></p>
+
+    <div class="terminal-grid" id="code-container">
+        </div>
+
+    <script src="data.js"></script>
+    <script>
+        const container = document.getElementById('code-container');
+        const codeItems = allProjects.filter(item => item.category === 'coding');
+
+        codeItems.forEach((code, index) => {
+            container.innerHTML += `
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <span>bash --project=${index + 1}</span>
+                        <span>[x]</span>
+                    </div>
+                    <div class="terminal-body">
+                        <img src="${code.image}" class="code-img" alt="preview">
+                        <div class="code-info">
+                            <h3 class="cmd-line">${code.title}</h3>
+                            <p class="code-desc">// ${code.description}</p>
+                            <div class="code-tags">
+                                ${code.tags.map(t => `<span>${t}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>

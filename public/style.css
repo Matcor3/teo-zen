@@ -685,3 +685,116 @@ footer {
     .glitch-text:hover span:nth-child(1) { transform: translateY(-10px); }
     .glitch-text:hover span:nth-child(2) { transform: translateY(10px); }
 }
+/* public/style.css - NUOVI SOCIAL (Circle Fill Effect) */
+
+#contact {
+    position: relative;
+    background: #000; /* Fondo nero */
+    padding: 80px 0; /* Spazio sopra e sotto */
+    border-top: 1px solid var(--blue-deep);
+    z-index: 100;
+    display: flex;
+    justify-content: center; /* Centra la lista orizzontalmente */
+    align-items: center;
+}
+
+/* La lista (Contenitore pulsanti) */
+.social-list {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    gap: 20px; /* Spazio tra i pulsanti */
+    flex-wrap: wrap; /* Su mobile vanno a capo se serve */
+}
+
+.social-list li {
+    list-style: none;
+}
+
+/* Il Cerchio Bianco */
+.social-list li a {
+    width: 60px;  /* Ho ridotto un po' da 80px perché erano enormi */
+    height: 60px;
+    background-color: #fff;
+    text-align: center;
+    line-height: 60px; /* Deve essere uguale all'altezza per centrare l'icona */
+    font-size: 25px;   /* Grandezza icona */
+    display: block;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid #fff;
+    z-index: 1;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Leggera ombra */
+}
+
+/* L'icona dentro */
+.social-list li a .icon {
+    position: relative;
+    color: #262626; /* Colore scuro iniziale */
+    transition: .5s;
+    z-index: 3;
+    /* Fix per centratura perfetta FontAwesome */
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal; 
+}
+
+/* Hover: L'icona diventa bianca e ruota */
+.social-list li a:hover .icon {
+    color: #fff;
+    transform: rotateY(360deg);
+}
+
+/* Il Colore che sale dal basso (Pseudo-elemento) */
+.social-list li a:before {
+    content: "";
+    position: absolute;
+    top: 100%; /* Parte nascosto sotto */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* background: viene definito sotto per ogni social */
+    transition: .5s;
+    z-index: 2;
+}
+
+/* Hover: Il colore sale */
+.social-list li a:hover:before {
+    top: 0;
+}
+
+/* --- COLORI SPECIFICI PER OGNI SOCIAL --- */
+
+/* 1. Instagram (Gradiente o Rosso/Viola) */
+.social-list li:nth-child(1) a:before {
+    background: #e4405f; 
+}
+
+/* 2. Facebook (Blu) */
+.social-list li:nth-child(2) a:before {
+    background: #3b5999;
+}
+
+/* 3. Youtube (Rosso) */
+.social-list li:nth-child(3) a:before {
+    background: #cd201f;
+}
+
+/* 4. Mail (Giallo/Oro per staccare o Grigio) */
+.social-list li:nth-child(4) a:before {
+    background: #ffb900; 
+}
+
+/* --- ADATTAMENTO MOBILE --- */
+@media (max-width: 768px) {
+    .social-list {
+        gap: 15px;
+    }
+    .social-list li a {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        font-size: 20px;
+    }
+}

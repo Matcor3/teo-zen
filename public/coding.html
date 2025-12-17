@@ -126,7 +126,20 @@
         .cmd-line::before { content: "> "; color: var(--hacker-green); }
 
         @media(max-width: 600px) { .terminal-grid { grid-template-columns: 1fr; } .terminal-body { flex-direction: column; } }
+/* Trasformiamo il link in un blocco che non sembra un link */
+a.terminal-window {
+    text-decoration: none; /* Toglie la sottolineatura */
+    color: inherit; /* Mantiene il colore verde hacker */
+    display: block; /* Si comporta come un div */
+    cursor: pointer;
+}
 
+/* Quando ci passi sopra, illuminiamo il bordo */
+a.terminal-window:hover {
+    border-color: var(--hacker-green);
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.3);
+    transform: scale(1.02);
+}
     </style>
 </head>
 <body>
@@ -146,26 +159,30 @@
         const container = document.getElementById('code-container');
         const codeItems = allProjects.filter(item => item.category === 'coding');
 
-        codeItems.forEach((code, index) => {
-            container.innerHTML += `
-                <div class="terminal-window">
-                    <div class="terminal-header">
-                        <span>bash --project=${index + 1}</span>
-                        <span>[x]</span>
-                    </div>
-                    <div class="terminal-body">
-                        <img src="${code.image}" class="code-img" alt="preview">
-                        <div class="code-info">
-                            <h3 class="cmd-line">${code.title}</h3>
-                            <p class="code-desc">// ${code.description}</p>
-                            <div class="code-tags">
-                                ${code.tags.map(t => `<span>${t}</span>`).join('')}
-                            </div>
-                        </div>
+        /* public/coding.html - SCRIPT AGGIORNATO */
+
+codeItems.forEach((code, index) => {
+    container.innerHTML += `
+        <a href="${code.url}" class="terminal-window" target="_blank">
+            
+            <div class="terminal-header">
+                <span>bash --run="${code.title.replace(/\s+/g, '_').toLowerCase()}.exe"</span>
+                <span>[↗]</span> </div>
+            
+            <div class="terminal-body">
+                <img src="${code.image}" class="code-img" alt="preview">
+                <div class="code-info">
+                    <h3 class="cmd-line">${code.title}</h3>
+                    <p class="code-desc">// ${code.description}</p>
+                    <div class="code-tags">
+                        ${code.tags.map(t => `<span>${t}</span>`).join('')}
                     </div>
                 </div>
-            `;
-        });
+            </div>
+
+        </a>
+    `;
+});
     </script>
 </body>
 </html>

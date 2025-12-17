@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro AI Prompt Builder</title>
+    <style>
+        /* --- STILE CSS --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            padding: 20px;
+            max-width: 1000px; /* Allargato leggermente */
+            margin: 0 auto;
+            padding-bottom: 180px; /* Spazio per il footer */
+        }
+
+        h1 { text-align: center; color: #00adb5; text-transform: uppercase; letter-spacing: 2px; }
+        h2 { border-bottom: 2px solid #00adb5; padding-bottom: 10px; margin-top: 40px; color: #fff; font-size: 1.5em; }
+        h4 { color: #00adb5; margin-top: 20px; margin-bottom: 10px; text-transform: uppercase; font-size: 0.9em; letter-spacing: 1px; }
+
+        .category-box {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Celle più larghe per il testo */
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        /* Stile Checkbox Container */
+        .option-item {
+            display: flex;
+            align-items: center;
+            background: #2c2c2c;
+            padding: 10px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .option-item:hover { background: #3a3a3a; }
+
+        input[type="checkbox"] { 
+            margin-right: 10px; 
+            transform: scale(1.2); 
+            cursor: pointer;
+        }
+        
+        .option-label {
+            flex-grow: 1;
+            font-size: 0.95em;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* --- INFO TOOLTIP (Il punto di domanda) --- */
+        .info-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 20px;
+            height: 20px;
+            background-color: #444;
+            color: #00adb5;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+            cursor: help;
+            position: relative;
+        }
+
+        .info-icon:hover { background-color: #00adb5; color: white; }
+
+        /* Il testo del tooltip */
+        .info-icon .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: #000;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%; /* Appare sopra l'icona */
+            left: 50%;
+            margin-left: -125px; /* Centrato */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85em;
+            line-height: 1.4;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            border: 1px solid #444;
+            pointer-events: none;
+        }
+
+        .info-icon:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Input di testo personalizzato */
+        input[type="text"] {
+            width: 98%;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background-color: #121212;
+            color: white;
+            margin-top: 10px;
+        }
+
+        /* --- RISULTATO FISSO --- */
+        .result-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1a1a1a;
+            padding: 15px 20px;
+            border-top: 3px solid #00adb5;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .result-container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        textarea {
+            width: 100%;
+            height: 70px;
+            background-color: #000;
+            color: #00adb5;
+            font-size: 1.1em;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            resize: none;
+        }
+
+        .buttons-row { display: flex; gap: 10px; justify-content: flex-end; }
+        
+        button {
+            color: white; border: none; padding: 10px 20px;
+            font-size: 1em; cursor: pointer; border-radius: 5px; font-weight: bold;
+        }
+        .btn-copy { background-color: #00adb5; } .btn-copy:hover { background-color: #008c95; }
+        .btn-update { background-color: #393e46; } .btn-update:hover { background-color: #505761; }
+        .btn-reset { background-color: #d9534f; } .btn-reset:hover { background-color: #c9302c; }
+
+    </style>
+</head>
+<body>
+
+    <h1>🎨 Pro AI Prompt Builder</h1>
+    <p style="text-align: center; color: #888;">Passa il mouse sul simbolo <strong>?</strong> per leggere le descrizioni in italiano.</p>
+
+    <div id="form-container">
+        </div>
+
+    <div class="result-area">
+        <div class="result-container">
+            <textarea id="finalPrompt" readonly placeholder="Il tuo prompt apparirà qui..."></textarea>
+            <div class="buttons-row">
+                <button class="btn-update" onclick="generatePrompt()">🔄 Aggiorna</button>
+                <button class="btn-reset" onclick="resetForm()">🗑️ Reset</button>
+                <button class="btn-copy" onclick="copyToClipboard()">📋 Copia Prompt</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATABASE DATI ---
+        // Qui configuriamo tutte le opzioni e le descrizioni
+        const promptData = [
+            {
+                id: "subject",
+                title: "1. Soggetto Principale",
+                description: "Chi o cosa è al centro dell'immagine.",
+                hasTextInput: true,
+                placeholder: "Es: A young woman with red hair, A colossal dragon...",
+                subcategories: [
+                    {
+                        name: "Suggerimenti Rapidi",
+                        options: [
+                            { val: "Portrait of a person", desc: "Ritratto generico di persona (età, genere, aspetto)." },
+                            { val: "Cute Animal", desc: "Animale (specie, dimensioni, comportamento)." },
+                            { val: "Inanimate Object", desc: "Oggetto (materiale, colore, condizioni)." },
+                            { val: "Landscape", desc: "Paesaggio naturale o urbano." }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "action",
+                title: "2. Azione o Situazione",
+                description: "Cosa sta accadendo nella scena.",
+                hasTextInput: true,
+                placeholder: "Es: reading a book, flying over mountains...",
+                subcategories: [
+                    {
+                        name: "Dinamica",
+                        options: [
+                            { val: "Walking", desc: "Cammina" },
+                            { val: "Flying", desc: "Vola" },
+                            { val: "Meditating", desc: "Medita" },
+                            { val: "Fighting", desc: "Combatte" },
+                            { val: "Observing", desc: "Osserva" },
+                            { val: "Dancing", desc: "Danza" },
+                            { val: "Screaming", desc: "Urla" },
+                            { val: "Static Pose", desc: "Posa statica (fermo)." },
+                            { val: "Action Scene", desc: "Scena d'azione dinamica." }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "setting",
+                title: "3. Ambientazione",
+                description: "Il contesto visivo e temporale.",
+                hasTextInput: true,
+                placeholder: "Es: in a dark cave, during the victorian era...",
+                subcategories: [
+                    {
+                        name: "Contesto Generale",
+                        options: [
+                            { val: "Forest", desc: "Foresta" },
+                            { val: "Desert", desc: "Deserto" },
+                            { val: "Futuristic City", desc: "Città futuristica" },
+                            { val: "Candlelit Room", desc: "Stanza illuminata da candele" },
+                            { val: "Cyberpunk Era", desc: "Periodo Cyberpunk" },
+                            { val: "Medieval Era", desc: "Periodo Medievale" },
+                            { val: "Post-Apocalyptic", desc: "Post-apocalittico" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "scenario",
+                title: "4. Scenario & Regia (Camera)",
+                description: "Inquadrature, angolazioni e lenti.",
+                hasTextInput: false,
+                subcategories: [
+                    {
+                        name: "Shot Sizes (Distanza)",
+                        options: [
+                            { val: "Extreme Close-Up", desc: "Dettaglio estremo (es. solo un occhio, texture pelle)." },
+                            { val: "Close-Up", desc: "Primo piano (testa e spalle). Ottimo per emozioni." },
+                            { val: "Medium Close-Up", desc: "Mezzo primo piano (dal petto in su)." },
+                            { val: "Medium Shot", desc: "Mezzo busto (dalla vita in su). Standard dialogo." },
+                            { val: "Cowboy Shot", desc: "Piano americano (dalle ginocchia in su)." },
+                            { val: "Full Shot", desc: "Figura intera (dalla testa ai piedi)." },
+                            { val: "Wide Shot", desc: "Campo largo. Ambiente dominante." },
+                            { val: "Extreme Long Shot", desc: "Campo lunghissimo. Soggetto piccolo, paesaggio epico." }
+                        ]
+                    },
+                    {
+                        name: "Camera Angles (Angolazioni)",
+                        options: [
+                            { val: "Eye-Level Shot", desc: "Ad altezza occhi. Neutra e naturale." },
+                            { val: "Low Angle", desc: "Dal basso verso l'alto. Soggetto imponente/minaccioso." },
+                            { val: "High Angle", desc: "Dall'alto verso il basso. Soggetto piccolo/vulnerabile." },
+                            { val: "Overhead Shot", desc: "A piombo (zenitale), esattamente sopra la scena." },
+                            { val: "Worm’s-Eye View", desc: "Rasoterra, guardando in alto. Drammatico." },
+                            { val: "Drone Shot", desc: "Vista aerea da molto in alto." }
+                        ]
+                    },
+                    {
+                        name: "Perspective & Composition",
+                        options: [
+                            { val: "POV", desc: "Soggettiva (attraverso gli occhi di qualcuno)." },
+                            { val: "Over-the-Shoulder Shot", desc: "Di quinta (da dietro la spalla di qualcuno)." },
+                            { val: "Dutch Angle", desc: "Inquadratura inclinata. Tensione e dinamismo." },
+                            { val: "Selfie Style", desc: "Tipico autoscatto con distorsione braccio." },
+                            { val: "Isometric View", desc: "Vista isometrica (stile The Sims/Mappe 3D)." },
+                            { val: "Knolling", desc: "Oggetti disposti ordinati a 90 gradi vista dall'alto." },
+                            { val: "Cross-Section", desc: "Sezione trasversale (casa o macchina tagliata a metà)." }
+                        ]
+                    },
+                    {
+                        name: "Lens Types (Obiettivi)",
+                        options: [
+                            { val: "Macro Lens", desc: "Per dettagli minuscoli con sfondo sfocato." },
+                            { val: "Fisheye Lens", desc: "Grandangolo estremo, distorsione sferica (GoPro)." },
+                            { val: "Telephoto Lens", desc: "Schiaccia la prospettiva, sfondo appare vicino." },
+                            { val: "Wide-Angle Lens", desc: "Ampio campo visivo, accentua prospettiva." },
+                            { val: "Bokeh", desc: "Sfondo sfocato per isolare il soggetto." }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "style",
+                title: "5. Stile Artistico",
+                description: "Estetica generale: foto, 3D, pittura.",
+                hasTextInput: true,
+                placeholder: "Es: style of Van Gogh, Picasso...",
+                subcategories: [
+                    {
+                        name: "Photography & Realism",
+                        options: [
+                            { val: "Photorealistic", desc: "Realismo standard." },
+                            { val: "Hyperrealistic", desc: "Dettagli esasperati, più reale del vero." },
+                            { val: "Cinematic", desc: "Luci drammatiche, widescreen, look da film." },
+                            { val: "Editorial Photography", desc: "Stile pulito, fashion, da rivista." },
+                            { val: "Analog Film", desc: "Grana pellicola, colori vintage (Kodak/Polaroid)." },
+                            { val: "National Geographic Style", desc: "Documentaristico, naturale, colori vibranti." }
+                        ]
+                    },
+                    {
+                        name: "Digital Art & 3D",
+                        options: [
+                            { val: "3D Render", desc: "Look tridimensionale generico." },
+                            { val: "Unreal Engine 5", desc: "Altissima qualità, luci in tempo reale." },
+                            { val: "Octane Render", desc: "Resa luci fisica, look 'plasticoso' e pulito." },
+                            { val: "Low Poly", desc: "Poligoni visibili, stile videogiochi anni 90." },
+                            { val: "Voxel Art", desc: "Stile a cubetti (Minecraft/Lego)." },
+                            { val: "Cyberpunk Style", desc: "Neon, pioggia, tech, viola/ciano." },
+                            { val: "Vaporwave", desc: "Pastello, statue greche, anni 80, nostalgico." }
+                        ]
+                    },
+                    {
+                        name: "Illustration & Traditional",
+                        options: [
+                            { val: "Oil Painting", desc: "Pittura a olio (aggiungi 'Impasto' per pennellate)." },
+                            { val: "Watercolor", desc: "Acquerello, morbido, macchie." },
+                            { val: "Charcoal Sketch", desc: "Carboncino, bianco e nero, ruvido." },
+                            { val: "Pencil Drawing", desc: "Disegno a matita, linee sottili." },
+                            { val: "Ink Wash", desc: "Inchiostro stile orientale (Sumi-e)." },
+                            { val: "Line Art", desc: "Solo contorni puliti, niente sfumature." },
+                            { val: "Vector Art", desc: "Piatto, colori solidi, stile Illustrator." },
+                            { val: "Pop Art", desc: "Colori accesi, puntinato (Warhol)." }
+                        ]
+                    },
+                    {
+                        name: "Specific Vibes",
+                        options: [
+                            { val: "Film Noir", desc: "Bianco e nero, ombre dure, misterioso." },
+                            { val: "Steampunk", desc: "Vapore, ingranaggi, ottone, vittoriano." },
+                            { val: "Surrealism", desc: "Onirico, proporzioni sbagliate (Dalì)." },
+                            { val: "Minimalist", desc: "Pochi elementi, spazio vuoto." },
+                            { val: "Art Nouveau", desc: "Linee curve, floreale, elegante (Mucha)." },
+                            { val: "Bauhaus", desc: "Geometrico, funzionale, colori primari." },
+                            { val: "Ukiyo-e", desc: "Stampe giapponesi su legno." },
+                            { val: "Anime Style", desc: "Animazione giapponese." }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "lighting",
+                title: "6. Illuminazione",
+                description: "Luci, atmosfera e orario.",
+                hasTextInput: true,
+                placeholder: "Es: purple neon lights...",
+                subcategories: [
+                    {
+                        name: "Naturale & Orario",
+                        options: [
+                            { val: "Golden Hour", desc: "Tramonto/alba. Luce calda, morbida, dorata." },
+                            { val: "Blue Hour", desc: "Crepuscolo. Luce fredda, bluastra, malinconica." },
+                            { val: "Overcast", desc: "Cielo coperto. Luce morbida senza ombre dure." },
+                            { val: "Direct Sunlight", desc: "Sole a picco. Ombre scure e nette, contrasto alto." },
+                            { val: "Moonlight", desc: "Luce lunare. Fredda, argentata." }
+                        ]
+                    },
+                    {
+                        name: "Studio & Direzionale",
+                        options: [
+                            { val: "Rim Light", desc: "Luce da dietro. Crea contorno luminoso (Halo)." },
+                            { val: "Rembrandt Lighting", desc: "Triangolo di luce sulla guancia in ombra. Drammatico." },
+                            { val: "Softbox Lighting", desc: "Luce artificiale diffusa (moda/prodotti)." },
+                            { val: "Hard Light", desc: "Luce dura, ombre nette (Noir)." },
+                            { val: "Butterfly Lighting", desc: "Luce dall'alto frontale. Glamour." },
+                            { val: "Chiaroscuro", desc: "Forte contrasto luce/buio (Caravaggio)." }
+                        ]
+                    },
+                    {
+                        name: "Atmosfera & Colore",
+                        options: [
+                            { val: "Volumetric Lighting", desc: "Raggi visibili nell'aria (God Rays). Epico." },
+                            { val: "Bioluminescence", desc: "Luce organica neon (piante/animali)." },
+                            { val: "Cinematic Lighting", desc: "Setup luci complesso da film." },
+                            { val: "Teal and Orange", desc: "Contrasto cinema: ombre blu, luci arancioni." },
+                            { val: "Warm Tones", desc: "Colori caldi (arancio, giallo)." },
+                            { val: "Cool Tones", desc: "Colori freddi (blu, ghiaccio)." }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "mood",
+                title: "7. Mood / Emozione",
+                description: "Tono della scena.",
+                hasTextInput: true,
+                placeholder: "Altro mood...",
+                subcategories: [
+                    {
+                        name: "Lista Emozioni",
+                        options: [
+                            { val: "Peaceful", desc: "Pacifico" },
+                            { val: "Joyful", desc: "Gioioso" },
+                            { val: "Dark & Mysterious", desc: "Oscuro e misterioso" },
+                            { val: "Melancholic", desc: "Malinconico" },
+                            { val: "Epic", desc: "Epico" },
+                            { val: "Romantic", desc: "Romantico" },
+                            { val: "Surreal", desc: "Surreale" },
+                            { val: "Horror", desc: "Orrore" },
+                            { val: "Dreamlike", desc: "Onirico" },
+                            { val: "Whimsical", desc: "Stravagante/Fiabesco" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "tech",
+                title: "8. Dettagli Tecnici",
+                description: "Qualità, formato e rendering.",
+                hasTextInput: true,
+                placeholder: "Es: --ar 16:9, --v 6.0...",
+                subcategories: [
+                    {
+                        name: "Qualità & Risoluzione",
+                        options: [
+                            { val: "8K Resolution", desc: "Altissima definizione." },
+                            { val: "Masterpiece", desc: "Forza la massima qualità artistica (Midjourney)." },
+                            { val: "Highly Detailed", desc: "Texture complesse." },
+                            { val: "Sharp Focus", desc: "Tutto perfettamente a fuoco." }
+                        ]
+                    },
+                    {
+                        name: "Formato & Materiali",
+                        options: [
+                            { val: "Widescreen", desc: "Formato cinema orizzontale." },
+                            { val: "Portrait", desc: "Formato verticale (mobile)." },
+                            { val: "Translucent", desc: "Materiale che fa passare luce (cera, pelle)." },
+                            { val: "Matte", desc: "Opaco, non riflette." },
+                            { val: "Glossy", desc: "Lucido, riflettente." },
+                            { val: "Rusty", desc: "Arrugginito, vissuto." },
+                            { val: "Fabric Texture", desc: "Trama del tessuto." }
+                        ]
+                    },
+                    {
+                        name: "Camera Settings & Post",
+                        options: [
+                            { val: "f/1.8", desc: "Apertura ampia, sfondo molto sfocato." },
+                            { val: "f/22", desc: "Apertura stretta, tutto a fuoco (paesaggi)." },
+                            { val: "Long Exposure", desc: "Esposizione lunga (scie luminose, acqua di seta)." },
+                            { val: "Color Grading", desc: "Bilanciamento colore artistico." },
+                            { val: "HDR", desc: "Dettagli visibili sia in ombra che in luce." },
+                            { val: "Vignette", desc: "Bordi scuri." },
+                            { val: "Film Grain", desc: "Grana pellicola." },
+                            { val: "Chromatic Aberration", desc: "Sbavatura colore lente (realismo 3D)." }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // --- GENERATORE DI HTML ---
+        const container = document.getElementById('form-container');
+
+        promptData.forEach(category => {
+            // Crea il box della categoria
+            const box = document.createElement('div');
+            box.className = 'category-box';
+            
+            // Titolo Categoria
+            const title = document.createElement('h2');
+            title.textContent = category.title;
+            box.appendChild(title);
+
+            // Descrizione sotto al titolo
+            if(category.description) {
+                const p = document.createElement('p');
+                p.textContent = category.description;
+                p.style.color = "#888";
+                box.appendChild(p);
+            }
+
+            // Loop Sottocategorie
+            category.subcategories.forEach(sub => {
+                const subTitle = document.createElement('h4');
+                subTitle.textContent = sub.name;
+                box.appendChild(subTitle);
+
+                const grid = document.createElement('div');
+                grid.className = 'options-grid';
+
+                // Loop Opzioni
+                sub.options.forEach(opt => {
+                    const item = document.createElement('div');
+                    item.className = 'option-item';
+
+                    // Checkbox
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.name = category.id; // raggruppa per ID categoria
+                    cb.value = opt.val;
+                    cb.id = `opt-${opt.val.replace(/\s+/g, '')}`; // ID univoco
+                    
+                    // Label
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    label.htmlFor = cb.id; // Collega label alla checkbox
+                    label.textContent = opt.val;
+
+                    // Tooltip (?)
+                    const info = document.createElement('span');
+                    info.className = 'info-icon';
+                    info.textContent = '?';
+                    
+                    const tooltipText = document.createElement('span');
+                    tooltipText.className = 'tooltip-text';
+                    tooltipText.textContent = opt.desc;
+                    info.appendChild(tooltipText);
+
+                    // Assemblaggio
+                    item.appendChild(cb);
+                    item.appendChild(label);
+                    item.appendChild(info);
+                    grid.appendChild(item);
+                });
+
+                box.appendChild(grid);
+            });
+
+            // Campo testo manuale (se previsto)
+            if (category.hasTextInput) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = `custom-${category.id}`;
+                input.placeholder = category.placeholder || "Altro...";
+                box.appendChild(input);
+            }
+
+            container.appendChild(box);
+        });
+
+
+        // --- LOGICA FUNZIONAMENTO ---
+
+        function generatePrompt() {
+            let promptParts = [];
+
+            // Cicliamo attraverso i dati originali per mantenere l'ordine corretto
+            promptData.forEach(cat => {
+                let catValues = [];
+                
+                // 1. Prendi i checkbox selezionati per questa categoria
+                const checkboxes = document.querySelectorAll(`input[name="${cat.id}"]:checked`);
+                checkboxes.forEach(cb => catValues.push(cb.value));
+
+                // 2. Prendi il testo manuale se esiste
+                if (cat.hasTextInput) {
+                    const textVal = document.getElementById(`custom-${cat.id}`).value.trim();
+                    if (textVal) catValues.push(textVal);
+                }
+
+                // 3. Se ci sono valori, uniscili e aggiungi al prompt
+                if (catValues.length > 0) {
+                    promptParts.push(catValues.join(", "));
+                }
+            });
+
+            const finalString = promptParts.join(", ");
+            document.getElementById('finalPrompt').value = finalString;
+        }
+
+        function resetForm() {
+            // Deseleziona tutti i checkbox
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+
+            // Svuota tutti i campi testo
+            const textInputs = document.querySelectorAll('input[type="text"]');
+            textInputs.forEach(input => input.value = "");
+
+            // Svuota risultato
+            document.getElementById('finalPrompt').value = "";
+        }
+
+        function copyToClipboard() {
+            const copyText = document.getElementById("finalPrompt");
+            if(!copyText.value) return;
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            // Feedback visivo rapido sul bottone
+            const btn = document.querySelector('.btn-copy');
+            const originalText = btn.textContent;
+            btn.textContent = "Copiato! 👍";
+            setTimeout(() => btn.textContent = originalText, 2000);
+        }
+
+        // Event Listeners globali (delegazione eventi per performance)
+        document.getElementById('form-container').addEventListener('change', generatePrompt);
+        document.getElementById('form-container').addEventListener('input', generatePrompt);
+
+    </script>
+</body>
+</html>

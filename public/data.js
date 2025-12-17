@@ -62,26 +62,29 @@ const allProjects = [
         tags: ["Traditional", "Sketch"]
     },
 
-    // --- CODING PROJECTS (Terminal) ---
+   // --- CODING PROJECTS ---
     {
         category: "coding",
         title: "TeoZen Portfolio",
-        image: "images/coding-1.jpg", // Usa screenshot del codice o del sito
+        image: "images/coding-1.jpg", 
         description: "Il sito che stai navigando. HTML5, CSS3, JS Vanilla.",
-        tags: ["Web Design", "Frontend"]
+        tags: ["Web Design", "Frontend"],
+        url: "#" // Questo ricarica la pagina stessa (o metti il link github)
     },
     {
         category: "coding",
-        title: "Music Algo-Generator",
+        title: "Kaleido Art", // PROGETTO LOCALE
         image: "images/coding-2.jpg",
-        description: "Script Python per generare melodie ambient basate sul meteo.",
-        tags: ["Python", "AI Music"]
+        description: "Un orologio digitale con effetto pioggia verde.",
+        tags: ["JS Vanilla", "Canvas"],
+        url: "projects/kaleido-art/index.html" // <-- LINK RELATIVO (LOCALE)
     },
     {
         category: "coding",
-        title: "Crypto Tracker",
+        title: "Scrittura Veloce", // PROGETTO VERCEL
         image: "images/coding-3.jpg",
         description: "Dashboard React per monitorare le crypto in tempo reale.",
-        tags: ["React", "API"]
+        tags: ["React", "API"],
+        url: "https://scrittura-veloce.vercel.app/" // <-- LINK ASSOLUTO (ESTERNO)
     }
 ];

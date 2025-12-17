@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Acchiappa il Puntino - Reflex Trainer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #1a1a2e;
+            color: white;
+            overflow: hidden;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        /* Animazioni base */
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .game-entity {
+            position: absolute;
+            cursor: crosshair;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            animation: popIn 0.15s ease-out;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Il bersaglio buono */
+        .dot {
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+
+        /* Il nemico da evitare */
+        .square {
+            border-radius: 4px; /* Leggermente stondato */
+            /* Pattern per distinguerlo meglio anche per daltonici */
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.1) 5px, rgba(0,0,0,0.1) 10px);
+        }
+
+        /* Feedback penalità (schermo rosso/shake) */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .penalty-shake {
+            animation: shake 0.5s;
+            box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Effetto testo penalità che fluttua via */
+        .floating-text {
+            position: absolute;
+            color: #ff4444;
+            font-weight: bold;
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: floatUp 0.8s ease-out forwards;
+            z-index: 20;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-50px) scale(1.5); opacity: 0; }
+        }
+
+        /* Effetto click ripple */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-anim 0.4s linear;
+            background-color: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+        }
+
+        @keyframes ripple-anim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .timer-bar { transition: width 1s linear; }
+    </style>
+</head>
+<body class="h-screen w-screen relative flex flex-col">
+
+    <!-- HUD -->
+    <div class="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-20 pointer-events-none">
+        <div class="bg-gray-900 bg-opacity-80 rounded-full px-6 py-2 border border-gray-700 flex items-center gap-2">
+            <span class="text-gray-400 text-sm uppercase font-bold tracking-wider">Punti</span>
+            <span id="score-display" class="text-2xl font-bold text-yellow-400 ml-2">0</span>
+            <span id="difficulty-badge" class="hidden text-xs px-2 py-0.5 rounded bg-red-600 text-white font-bold ml-2">HARD</span>
+        </div>
+        
+        <div class="bg-gray-900 bg-opacity-80 rounded-full px-6 py-2 border border-gray-700">
+            <span class="text-gray-400 text-sm uppercase font-bold tracking-wider">Tempo</span>
+            <span id="time-display" class="text-2xl font-bold text-red-400 ml-2">30</span>
+        </div>
+    </div>
+
+    <!-- Barra Tempo -->
+    <div class="absolute top-0 left-0 w-full h-1 bg-gray-800 z-30">
+        <div id="timer-bar" class="h-full bg-gradient-to-r from-green-400 to-red-500 w-full timer-bar"></div>
+    </div>
+
+    <!-- Area di Gioco -->
+    <div id="game-area" class="flex-grow relative w-full h-full cursor-crosshair overflow-hidden">
+        <!-- Entità qui -->
+    </div>
+
+    <!-- Schermata Iniziale -->
+    <div id="start-screen" class="absolute inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-95">
+        <div class="glass-panel p-8 rounded-2xl text-center max-w-md w-full mx-4">
+            <h1 class="text-5xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                Acchiappa<br>il Puntino
+            </h1>
+            <p class="text-gray-300 mb-6 text-lg">Seleziona la difficoltà</p>
+            
+            <div class="bg-gray-800 rounded-lg p-4 mb-6">
+                <p class="text-sm text-gray-400 mb-1">Miglior Punteggio</p>
+                <div class="flex justify-around items-center">
+                    <div class="text-center">
+                        <span class="text-xs text-blue-300">MEDIUM</span><br>
+                        <span id="best-score-medium" class="text-2xl font-bold text-white">0</span>
+                    </div>
+                    <div class="w-px h-8 bg-gray-600"></div>
+                    <div class="text-center">
+                        <span class="text-xs text-red-400">HARD</span><br>
+                        <span id="best-score-hard" class="text-2xl font-bold text-white">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <button onclick="startGame('medium')" class="relative group bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-6 rounded-xl text-xl shadow-lg transform transition active:scale-95 border-b-4 border-blue-800 hover:border-blue-700">
+                    <div class="flex items-center justify-between">
+                        <div class="text-left">
+                            <span class="block text-lg">MEDIUM</span>
+                            <span class="text-xs font-normal text-blue-200">Solo riflessi. Cerchi grandi.</span>
+                        </div>
+                        <span class="text-2xl">🟢</span>
+                    </div>
+                </button>
+
+                <button onclick="startGame('hard')" class="relative group bg-red-600 hover:bg-red-500 text-white font-bold py-4 px-6 rounded-xl text-xl shadow-lg transform transition active:scale-95 border-b-4 border-red-800 hover:border-red-700">
+                    <div class="flex items-center justify-between">
+                        <div class="text-left">
+                            <span class="block text-lg">HARD 🔥</span>
+                            <span class="text-xs font-normal text-red-200">Cerchi piccoli + Quadrati trappola.</span>
+                        </div>
+                        <span class="text-2xl">🛑</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schermata Game Over -->
+    <div id="game-over-screen" class="hidden absolute inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-95">
+        <div class="glass-panel p-8 rounded-2xl text-center max-w-md w-full mx-4">
+            <h2 class="text-4xl font-bold mb-2 text-white">Tempo Scaduto!</h2>
+            <p id="game-over-mode" class="text-sm uppercase tracking-widest text-gray-400 mb-6">Modalità Medium</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="bg-gray-800 rounded-lg p-4">
+                    <p class="text-xs text-gray-400 uppercase">Punteggio</p>
+                    <p id="final-score" class="text-4xl font-bold text-white">0</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-4">
+                    <p class="text-xs text-gray-400 uppercase">Precisione</p>
+                    <p id="final-accuracy" class="text-4xl font-bold text-green-400">100%</p>
+                </div>
+            </div>
+
+            <p id="new-record-msg" class="hidden text-yellow-400 font-bold mb-6 text-lg animate-bounce">🏆 NUOVO RECORD! 🏆</p>
+
+            <button id="retry-btn" class="w-full bg-white text-gray-900 hover:bg-gray-200 font-bold py-3 px-8 rounded-xl text-lg shadow-lg transform transition active:scale-95 mb-3">
+                Riprova
+            </button>
+            <button onclick="showStartScreen()" class="w-full bg-transparent border border-gray-600 text-gray-400 hover:text-white hover:border-white font-semibold py-3 px-8 rounded-xl transition">
+                Menu Principale
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- Configurazioni ---
+        const GAME_DURATION = 30; 
+        const COLORS = ['#FF0055', '#00FF99', '#00CCFF', '#FFCC00', '#FF33FF', '#33FF33'];
+        
+        // Settings per difficoltà
+        const SETTINGS = {
+            medium: {
+                dotSize: 70,
+                distractors: 0,
+                penalty: 0,
+                targetClass: 'dot'
+            },
+            hard: {
+                dotSize: 40, // Molto più piccolo
+                distractors: 2, // Numero di quadrati trappola
+                penalty: 5,
+                targetClass: 'dot'
+            }
+        };
+
+        // --- Stato ---
+        let state = {
+            score: 0,
+            timeLeft: GAME_DURATION,
+            isPlaying: false,
+            clicks: 0,
+            hits: 0,
+            mode: 'medium', // 'medium' or 'hard'
+            timerInterval: null
+        };
+
+        // --- DOM Cache ---
+        const els = {
+            gameArea: document.getElementById('game-area'),
+            score: document.getElementById('score-display'),
+            time: document.getElementById('time-display'),
+            timerBar: document.getElementById('timer-bar'),
+            startScreen: document.getElementById('start-screen'),
+            gameOver: document.getElementById('game-over-screen'),
+            bestMedium: document.getElementById('best-score-medium'),
+            bestHard: document.getElementById('best-score-hard'),
+            finalScore: document.getElementById('final-score'),
+            finalAccuracy: document.getElementById('final-accuracy'),
+            newRecordMsg: document.getElementById('new-record-msg'),
+            difficultyBadge: document.getElementById('difficulty-badge'),
+            retryBtn: document.getElementById('retry-btn'),
+            gameOverMode: document.getElementById('game-over-mode')
+        };
+
+        // --- Audio ---
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const t = audioCtx.currentTime;
+
+            if (type === 'hit') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, t);
+                osc.frequency.exponentialRampToValueAtTime(880, t + 0.1);
+                gain.gain.setValueAtTime(0.1, t);
+                gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+                osc.start();
+                osc.stop(t + 0.1);
+            } else if (type === 'penalty') {
+                // Suono sgradevole "Bzzzt"
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, t);
+                osc.frequency.linearRampToValueAtTime(100, t + 0.2);
+                gain.gain.setValueAtTime(0.2, t);
+                gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+                osc.start();
+                osc.stop(t + 0.2);
+            } else if (type === 'over') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(200, t);
+                osc.frequency.linearRampToValueAtTime(100, t + 0.5);
+                gain.gain.setValueAtTime(0.2, t);
+                gain.gain.linearRampToValueAtTime(0.01, t + 0.5);
+                osc.start();
+                osc.stop(t + 0.5);
+            }
+        }
+
+        // --- Storage ---
+        function updateBestScores() {
+            els.bestMedium.textContent = localStorage.getItem('reflexBest_medium') || 0;
+            els.bestHard.textContent = localStorage.getItem('reflexBest_hard') || 0;
+        }
+        updateBestScores();
+
+        // --- Core ---
+
+        function init() {
+            // Gestione click a vuoto (precisione)
+            const countClick = (e) => {
+                if(state.isPlaying && e.target === els.gameArea) state.clicks++;
+            };
+            els.gameArea.addEventListener('mousedown', countClick);
+            els.gameArea.addEventListener('touchstart', (e) => {
+                if(state.isPlaying && e.target === els.gameArea) state.clicks++;
+            }, {passive: true});
+        }
+
+        function startGame(difficulty) {
+            state.mode = difficulty;
+            state.score = 0;
+            state.hits = 0;
+            state.clicks = 0;
+            state.timeLeft = GAME_DURATION;
+            state.isPlaying = true;
+
+            // Setup UI
+            els.score.textContent = '0';
+            els.time.textContent = state.timeLeft;
+            els.startScreen.classList.add('hidden');
+            els.gameOver.classList.add('hidden');
+            els.gameArea.innerHTML = '';
+            document.body.classList.remove('penalty-shake'); // Reset eventuali shake
+
+            // Reset Timer Bar
+            els.timerBar.style.width = '100%';
+            els.timerBar.style.transition = 'none'; 
+            
+            // Badge difficoltà
+            if(difficulty === 'hard') {
+                els.difficultyBadge.classList.remove('hidden');
+                els.difficultyBadge.textContent = "HARD";
+                els.difficultyBadge.className = "text-xs px-2 py-0.5 rounded bg-red-600 text-white font-bold ml-2";
+            } else {
+                els.difficultyBadge.classList.remove('hidden');
+                els.difficultyBadge.textContent = "MEDIUM";
+                els.difficultyBadge.className = "text-xs px-2 py-0.5 rounded bg-blue-500 text-white font-bold ml-2";
+            }
+
+            // Retry Button Setup
+            els.retryBtn.onclick = () => startGame(difficulty);
+
+            // Spawn iniziale
+            spawnEntities();
+
+            // Start Timer
+            setTimeout(() => {
+                els.timerBar.style.transition = `width ${GAME_DURATION}s linear`;
+                els.timerBar.style.width = '0%';
+            }, 50);
+
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            state.timeLeft--;
+            els.time.textContent = state.timeLeft;
+
+            if (state.timeLeft <= 0) {
+                endGame();
+            } else if (state.timeLeft <= 5) {
+                els.time.classList.add('text-red-600', 'scale-125');
+                setTimeout(() => els.time.classList.remove('text-red-600', 'scale-125'), 200);
+            }
+        }
+
+        function getRandomPosition(size) {
+            const w = els.gameArea.clientWidth;
+            const h = els.gameArea.clientHeight;
+            const pad = 20;
+            
+            return {
+                left: Math.max(pad, Math.floor(Math.random() * (w - size - pad))),
+                top: Math.max(pad, Math.floor(Math.random() * (h - size - pad)))
+            };
+        }
+
+        // Funzione centrale per generare oggetti
+        function spawnEntities() {
+            if (!state.isPlaying) return;
+            els.gameArea.innerHTML = ''; // Pulisce tutto
+
+            const cfg = SETTINGS[state.mode];
+
+            // 1. Crea il Bersaglio (Dot)
+            createEntity('dot', cfg.dotSize);
+
+            // 2. Crea Distrattori (se Hard)
+            for (let i = 0; i < cfg.distractors; i++) {
+                // Leggera variazione dimensione distrattori per confondere
+                const distSize = cfg.dotSize * (0.9 + Math.random() * 0.3); 
+                createEntity('square', distSize);
+            }
+        }
+
+        function createEntity(type, size) {
+            const el = document.createElement('div');
+            el.classList.add('game-entity');
+            
+            // Assegna classe specifica (forma)
+            el.classList.add(type);
+
+            // Colore random
+            const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+            el.style.backgroundColor = color;
+            el.style.width = `${size}px`;
+            el.style.height = `${size}px`;
+
+            // Posizione
+            const pos = getRandomPosition(size);
+            el.style.left = `${pos.left}px`;
+            el.style.top = `${pos.top}px`;
+
+            // Eventi
+            const handleClick = (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                if (type === 'dot') {
+                    handleHit(e, el);
+                } else {
+                    handlePenalty(e, el);
+                }
+            };
+
+            el.addEventListener('mousedown', handleClick);
+            el.addEventListener('touchstart', handleClick, {passive: false});
+
+            els.gameArea.appendChild(el);
+        }
+
+        function handleHit(e, el) {
+            if (!state.isPlaying) return;
+            state.hits++;
+            state.clicks++;
+            state.score++;
+            els.score.textContent = state.score;
+            playSound('hit');
+            createRipple(e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY);
+            
+            // Respawn immediato di tutto il set
+            spawnEntities();
+        }
+
+        function handlePenalty(e, el) {
+            if (!state.isPlaying) return;
+            state.clicks++;
+            
+            const penalty = SETTINGS[state.mode].penalty;
+            state.score -= penalty;
+            els.score.textContent = state.score;
+            
+            playSound('penalty');
+
+            // Visual Feedback
+            document.body.classList.remove('penalty-shake');
+            void document.body.offsetWidth; // Trigger reflow
+            document.body.classList.add('penalty-shake');
+
+            // Floating text "-5"
+            showFloatingText(e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY, `-${penalty}`);
+
+            // In hard mode, NON respawniamo subito se clicchi sbagliato,
+            // ti obblighiamo a trovare il cerchio.
+            // Opzionale: rimuovere il quadrato cliccato per pulire la visuale? 
+            // Meglio di no, così la penalità insegna a non cliccare lì.
+        }
+
+        function showFloatingText(x, y, text) {
+            const el = document.createElement('div');
+            el.textContent = text;
+            el.classList.add('floating-text');
+            el.style.left = `${x}px`;
+            el.style.top = `${y}px`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 800);
+        }
+
+        function createRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.classList.add('ripple');
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 400);
+        }
+
+        function endGame() {
+            state.isPlaying = false;
+            clearInterval(state.timerInterval);
+            playSound('over');
+            document.body.classList.remove('penalty-shake');
+
+            // Calcoli finali
+            let accuracy = 0;
+            if (state.clicks > 0) accuracy = Math.round((state.hits / state.clicks) * 100);
+            if (state.hits === 0) accuracy = 0;
+            // Cap accuracy at 0 min (nel caso di punteggio negativo per penalità)
+            
+            els.finalScore.textContent = state.score;
+            els.finalAccuracy.textContent = `${accuracy}%`;
+            els.gameOverMode.textContent = `Modalità ${state.mode.toUpperCase()}`;
+
+            // Save High Score
+            const storageKey = `reflexBest_${state.mode}`;
+            const currentBest = parseInt(localStorage.getItem(storageKey) || 0);
+            
+            if (state.score > currentBest) {
+                localStorage.setItem(storageKey, state.score);
+                els.newRecordMsg.classList.remove('hidden');
+                updateBestScores();
+            } else {
+                els.newRecordMsg.classList.add('hidden');
+            }
+
+            els.gameOver.classList.remove('hidden');
+        }
+
+        function showStartScreen() {
+            els.gameOver.classList.add('hidden');
+            els.startScreen.classList.remove('hidden');
+            els.gameArea.innerHTML = '';
+            document.body.classList.remove('penalty-shake');
+            updateBestScores();
+        }
+
+        init();
+    </script>
+</body>
+</html>

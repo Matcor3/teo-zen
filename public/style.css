@@ -241,7 +241,7 @@ canvas {
     position: relative;
     
     /* 1. IL NUOVO SFONDO GRADIENTE (Che ti piace) */
-    background: linear-gradient(180deg, #0f0c29, #302b63, #24243e);
+    background: linear-gradient(180deg,#2D7EE0, #4E2DE0, #2D45E0, #2DB7E0, #8A2DE0, #7785E0);
     background-size: 100% 300%;
     animation: bg-pan-bottom 15s infinite alternate both;
     
@@ -562,20 +562,29 @@ canvas {
     transition: opacity 0.3s;
 }
 
-/* TITOLO 2: PICCOLO (SEE PROJECT) */
+/* TITOLO 2: CALL TO ACTION (SEE PROJECT) */
 .titles-slide h3:nth-child(2) {
     display: flex;
     align-items: center;
     height: 300px;
     
-    font-size: 20px; /* MOLTO PICCOLO */
-    font-family: var(--font-body); /* Font più leggibile */
-    letter-spacing: 5px; /* Molto spaziato */
-    font-weight: 700;
-    color: var(--blue-cyan); /* Colore acceso */
+    /* --- STILE AGGIORNATO --- */
+    font-size: 32px;        /* Molto più grande e leggibile */
+    font-family: var(--font-titles); /* Usiamo lo stesso font del titolo per coerenza */
+    font-weight: 900;       /* Grassetto massimo */
+    color: #ffffff;         /* Bianco puro */
+    letter-spacing: 1px;    /* Spaziatura più stretta per impatto */
     text-transform: uppercase;
     
-    padding-left: 50px; /* Spostato un po' a destra */
+    /* --- ALLINEAMENTO --- */
+    padding-left: 0;        /* RIMOSSO: Ora è allineato a sinistra col titolo sopra */
+    justify-content: flex-start; 
+    
+    /* Ombra per leggerlo bene sopra qualsiasi foto */
+    text-shadow: 2px 2px 0px var(--blue-deep), 0 0 20px rgba(0,0,0,0.8);
+    
+    /* Opzionale: se vuoi che sia proprio attaccato al bordo sinistro dell'immagine */
+    /* margin-left: -20px; */ 
 }
 
 /* --- ANIMAZIONI HOVER --- */

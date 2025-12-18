@@ -235,19 +235,35 @@ canvas {
 }
 
 /* SEZIONE 3: Identità Sticky */
+/* public/style.css - FIX SCROLLING IDENTITÀ */
+
 #identity-section {
-    height: 300vh; 
     position: relative;
-    background-color: var(--bg-dark);
+    
+    /* 1. IL NUOVO SFONDO GRADIENTE (Che ti piace) */
+    background: linear-gradient(180deg, #0f0c29, #302b63, #24243e);
+    background-size: 100% 300%;
+    animation: bg-pan-bottom 15s infinite alternate both;
+    
+    /* 2. LA REGOLA FONDAMENTALE MANCANTE (L'Altezza) */
+    /* Deve essere molto alto per permettere lo scroll interno! */
+    height: 350vh; 
+    
+    z-index: 1; 
 }
+
+/* Il contenitore che "blocca" le carte allo schermo */
 .sticky-container {
-    position: sticky;
+    position: sticky; /* Si incolla allo schermo */
     top: 0;
-    height: 100vh;
+    width: 100%;
+    height: 100vh; /* Alto quanto lo schermo */
+    
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    
+    overflow: hidden; /* Nasconde ciò che esce */
 }
 /* --- NUOVO STILE IDENTITÀ (Schede Rettangolari) --- */
 
@@ -351,16 +367,20 @@ canvas {
 /* public/style.css - NUOVO STILE WORK (POSTER EFFECT) */
 
 #work {
-    position: relative; 
+    position: relative;
     z-index: 100;
-    background: #050510;
+    
     padding: 100px 20px;
     min-height: 100vh;
-    box-shadow: 0 -20px 50px #000;
-    /* Centriamo tutto il contenuto */
+    box-shadow: 0 -20px 50px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    /* --- STESSO SFONDO ANIMATO (Per continuità) --- */
+    background: linear-gradient(180deg, #24243e, #302b63, #0f0c29);
+    background-size: 100% 300%;
+    animation: bg-pan-bottom 15s infinite alternate both;
 }
 
 #work h2 {
@@ -855,4 +875,13 @@ footer {
         line-height: 50px;
         font-size: 20px;
     }
+}
+/* --- MOTORE ANIMAZIONE SFONDO --- */
+@-webkit-keyframes bg-pan-bottom {
+  0% { background-position: 50% 0%; }
+  100% { background-position: 50% 100%; }
+}
+@keyframes bg-pan-bottom {
+  0% { background-position: 50% 0%; }
+  100% { background-position: 50% 100%; }
 }

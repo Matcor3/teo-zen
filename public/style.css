@@ -11,8 +11,46 @@
     --bg-dark: #050510;      /* Quasi nero, per lo sfondo */
     --font-titles: 'Orbitron', sans-serif;  /* Per titoli e impatto */
     --font-body: 'Montserrat', sans-serif;  /* Per testi lunghi */
+    html {
+    scroll-behavior: smooth;
+}
+}
+/* --- SCROLLBAR PERSONALIZZATA (Solo Webkit: Chrome, Safari, Edge) --- */
+
+/* La larghezza della barra */
+::-webkit-scrollbar {
+    width: 10px;
 }
 
+/* Il binario (sfondo della barra) */
+::-webkit-scrollbar-track {
+    background: #050510; /* Nero spaziale */
+    border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+/* La maniglia (la parte che si muove) */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--blue-deep), var(--purple-violet));
+    border-radius: 5px;
+    border: 2px solid #050510; /* Crea spazio intorno */
+}
+
+/* Quando ci passi sopra col mouse */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--blue-cyan);
+    box-shadow: 0 0 10px var(--blue-cyan); /* Effetto neon */
+}
+/* Colore di selezione del testo */
+::selection {
+    background: var(--purple-violet);
+    color: #fff;
+    text-shadow: 0 0 5px #fff;
+}
+/* Per Firefox */
+::-moz-selection {
+    background: var(--purple-violet);
+    color: #fff;
+}
 body {
     margin: 0;
     padding: 0;
@@ -26,6 +64,26 @@ body {
     background: radial-gradient(circle at center, #1a1a2e, #000);
     color: var(--blue-soft); /* Colore testo base */
     overflow-x: hidden;
+    /* --- NUOVO CURSORE PERSONALIZZATO --- */
+    /* La sintassi è: url('percorso'), fallback; */
+    /* 'auto' serve nel caso l'immagine non si carichi */
+    cursor: url('images/cursor.png'), auto;
+    /* style.css */
+
+/* Forza il tuo cursore su TUTTI gli elementi cliccabili */
+a, 
+button, 
+input, 
+textarea,
+.social-btn,       /* I tuoi pulsanti social */
+.poster-wrapper,   /* Le card dei lavori */
+.terminal-window,  /* Le finestre di coding */
+.identity-card,    /* Le card identità */
+.work-item {
+    /* IMPORTANTE: Usa le STESSE coordinate (es. 32 32) che hai messo nel body */
+    /* Altrimenti il cursore "salta" quando passi sopra un link */
+    cursor: url('images/cursor.png') , pointer !important;
+}
 }
 h1, h2, h3, nav a, .identity-card h1 {
     font-family: var(--font-titles);
@@ -133,8 +191,8 @@ canvas {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border-top: 2px solid var(--blue-deep);
-    border-bottom: 2px solid var(--blue-deep);
+    /* border-top: 2px solid var(--blue-deep);
+    border-bottom: 2px solid var(--blue-deep);*/
 }
 
 .parallax-bg {

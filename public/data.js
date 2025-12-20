@@ -13,7 +13,7 @@ const allProjects = [
     // --- DIY / INVENTIONS ---
     {
         category: "diy", // ETICHETTA IMPORTANTE
-        title: "Alimentatore da baoco",
+        title: "Alimentatore da banco",
         image: "images/diy2.jpg", // Trova un'immagine per questo!
         description: "Alimentatore PC trasformato in alimentatore da banco regolabile.",
     
@@ -29,21 +29,21 @@ const allProjects = [
     // --- ART PROJECTS (Galleria) ---
     {
         category: "art",
-        title: "Digital Soul",
-        image: "images/art-1.jpg", 
-        description: "Studio sulla fusione tra anatomia umana e circuiti."
+        title: "All eyes on me",
+        image: "images/art1.jpg", 
+        description: "Collage di occhi umani."
     },
     {
         category: "art",
-        title: "Neon Dreams",
-        image: "images/art-2.jpg",
-        description: "Paesaggi urbani onirici ispirati a Tokyo."
+        title: "M for Matteo",
+        image: "images/art2.jpg",
+        description: "Fusione digitale di ritratti e lettere."
     },
     {
         category: "art",
-        title: "Charcoal Faces",
-        image: "images/art-3.jpg",
-        description: "Ritratti dal vivo, carboncino su carta ruvida."
+        title: "Grime face",
+        image: "images/art3.jpg",
+        description: "Grime effect su ritratto digitale."
     },
 
    // --- CODING PROJECTS ---

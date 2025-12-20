@@ -51,7 +51,17 @@
 
         nav { background: #002244; border-bottom: 2px solid var(--safety-yellow); }
         nav a { font-family: var(--font-body); color: var(--safety-yellow) !important; text-shadow: none !important; -webkit-text-stroke: 0 !important; }
-        
+       
+        .page-desc {
+    font-family: 'Space Mono', monospace;
+    color: var(--safety-yellow); /* Giallo tecnico */
+    max-width: 700px;
+    margin: 0 auto 60px auto;
+    border-left: 2px solid var(--safety-yellow);
+    padding-left: 15px;
+    text-align: left; /* Allineato a sinistra come un documento */
+    font-size: 0.9rem;
+}
         .container {
             max-width: 1200px;
             margin: 120px auto 50px;
@@ -142,7 +152,19 @@
 
     <div class="container">
         <h1>PROTOTYPE LAB</h1>
-        
+        <p class="page-desc">
+    /// SYSTEM LOG: ACTIVE <br>
+    Sono sempre alla ricerca di nuove sfide.
+Il DIY (Do It Yourself) per me non è solo un hobby, ma una risposta concreta a un bisogno reale: quando creo qualcosa, è perché mi serve davvero.
+
+Il mio motto è semplice e un po’ controcorrente:
+“Non spendere più di quanto costerebbe nuovo in negozio.”
+
+Le mie creazioni nascono spesso da materiali riadattati, componenti economici o parti recuperate e riciclate. Non per risparmiare a tutti i costi, ma per dimostrare che ingegno e creatività valgono più del budget.
+
+La vera sfida non è solo costruire qualcosa con le proprie mani,
+ma farlo nel modo più intelligente possibile, spendendo il minimo e ottenendo comunque un risultato solido, funzionale e perché no sorprendente.
+</p>
         <div class="blueprint-grid" id="diy-container">
             </div>
     </div>
@@ -169,8 +191,7 @@
                             <span class="tech-id">${projectID}</span>
                         </div>
                         <p class="tech-desc">${item.description}</p>
-                        <div class="tech-tags">
-                            ${item.tags.map(t => `<span class="tech-tag">[${t}]</span>`).join('')}
+                       
                         </div>
                     </div>
                 </div>

@@ -59,7 +59,16 @@
             text-shadow: none;
         }
         .subtitle { color: #666; font-size: 0.9rem; margin-top: 10px; font-style: normal; }
-
+.page-desc {
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    color: #444; /* Grigio scuro su bianco */
+    max-width: 500px;
+    margin: 20px auto 80px auto;
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
         /* LAYOUT MASONRY (Pinterest Style) */
         .gallery-container {
             column-count: 3; /* 3 Colonne */
@@ -114,7 +123,13 @@
 
     <header>
         <h1>VISUAL_ART</h1>
-        <p class="subtitle">Selected works 2023-2025</p>
+        <p class="page-desc">
+      Sono sempre alla ricerca di nuove sfide.
+L’arte, per me, non è solo espressione: è esplorazione, sperimentazione, rischio.
+Mi muovo tra tecniche e stili diversi, senza schemi fissi, inseguendo quell’equilibrio raro tra istinto e soddisfazione personale.
+Ogni progetto è un tentativo di andare un po’ oltre.
+</p>
+        <p class="subtitle">Un'esplorazione visiva tra digitale e analogico.</p>
     </header>
 
     <div class="gallery-container" id="art-container">
@@ -132,7 +147,7 @@
                     <div class="art-info">
                         <h3 class="art-title">${art.title}</h3>
                         <p class="art-desc">${art.description}</p>
-                        <div class="art-tags">${art.tags.join(' • ')}</div>
+                        
                     </div>
                 </div>
             `;

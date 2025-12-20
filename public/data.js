@@ -65,9 +65,9 @@ const allProjects = [
    // --- CODING PROJECTS ---
     {
         category: "coding",
-        title: "TeoZen Portfolio",
+        title: "Prompt Image Generator", // PROGETTO LOCALE
         image: "images/coding-1.jpg", 
-        description: "Il sito che stai navigando. HTML5, CSS3, JS Vanilla.",
+        description: "Ti aiuta a creare immagini con AI basate su prompt testuali.",
         tags: ["Web Design", "Frontend"],
         url: "#" // Questo ricarica la pagina stessa (o metti il link github)
     },

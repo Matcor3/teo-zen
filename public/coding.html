@@ -50,7 +50,15 @@
         .sys-msg { text-align: center; color: var(--hacker-green); margin-bottom: 50px; opacity: 0.8; }
         .blink { animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
-
+        
+.page-desc {
+    text-align: left;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--hacker-green);
+    opacity: 0.7;
+    margin-bottom: 60px;
+    font-size: 1rem;
+}
         /* Griglia */
         .terminal-grid {
             display: grid;
@@ -150,7 +158,17 @@ a.terminal-window:hover {
 
     <h1>DEV_AREA</h1>
     <p class="sys-msg">System Status: <span style="color:#fff">ONLINE</span> <span class="blink">_</span></p>
+<p class="page-desc">
+    > Executing portfolio_scan... <br>
+    > Sono sempre alla ricerca di nuove sfide.
+E proprio il coding, un linguaggio che all’inizio mi sembrava quasi indecifrabile, mi ha incuriosito a tal punto da spingermi ad andare a fondo.
 
+Non volevo limitarmi a studiare teoria o a scrivere codice tanto per farlo: l’obiettivo era creare qualcosa di concreto, utile, che avesse senso anche nella vita di tutti i giorni. Così sono nate le mie prime app e i miei primi progetti web: strumenti semplici, ma pensati per essere davvero usati.
+
+Per un neofita, partire da poche righe di codice su uno schermo e ritrovarsi con un programma che risponde, interagisce e funziona è una soddisfazione enorme. È il momento in cui il caos diventa struttura, e l’idea prende forma.
+
+Ad oggi ho realizzato alcune app per Android, diverse pagine web e questo sito: non un punto di arrivo, ma una tappa di un percorso in continua evoluzione.
+</p>
     <div class="terminal-grid" id="code-container">
         </div>
 
@@ -174,8 +192,7 @@ codeItems.forEach((code, index) => {
                 <div class="code-info">
                     <h3 class="cmd-line">${code.title}</h3>
                     <p class="code-desc">// ${code.description}</p>
-                    <div class="code-tags">
-                        ${code.tags.map(t => `<span>${t}</span>`).join('')}
+                    
                     </div>
                 </div>
             </div>

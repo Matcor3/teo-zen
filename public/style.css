@@ -11,9 +11,11 @@
     --bg-dark: #050510;      /* Quasi nero, per lo sfondo */
     --font-titles: 'Orbitron', sans-serif;  /* Per titoli e impatto */
     --font-body: 'Montserrat', sans-serif;  /* Per testi lunghi */
-    html {
-    scroll-behavior: smooth;
+   
 }
+/* SMOOTH SCROLLING PER TUTTO IL SITO */
+ html {
+    scroll-behavior: smooth;
 }
 /* --- SCROLLBAR PERSONALIZZATA (Solo Webkit: Chrome, Safari, Edge) --- */
 

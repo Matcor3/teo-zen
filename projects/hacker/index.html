@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANON_LINK v4.0 | GLOBAL INFILTRATION</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'VT323', monospace;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 100;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .scanline {
+            width: 100%; height: 100px; z-index: 101;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0, 255, 0, 0.1) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1; position: absolute; bottom: 100%;
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanline { 0% { bottom: 100%; } 100% { bottom: -100px; } }
+
+        .glitch-text { animation: glitch 1.5s linear infinite; }
+        @keyframes glitch {
+            2%, 64% { transform: translate(1px,0); }
+            4%, 60% { transform: translate(-1px,0); }
+            62% { transform: skew(2deg); }
+        }
+
+        .hack-window {
+            background: rgba(0, 15, 0, 0.95);
+            border: 1px solid #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+            animation: fadeIn 0.15s ease-out;
+            z-index: 30;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        .window-header { background: #0f0; color: #000; font-weight: bold; padding: 2px 8px; font-size: 0.75rem; text-transform: uppercase; }
+
+        .btn-hacker {
+            border: 1px solid #0f0;
+            padding: 1rem;
+            transition: 0.2s;
+            text-shadow: 0 0 5px #0f0;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-hacker:hover { background: #0f0; color: #000; box-shadow: 0 0 25px #0f0; }
+        .btn-hacker::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(0,255,0,0.1), transparent); transform: rotate(45deg); transition: 0.5s; }
+        .btn-hacker:hover::after { left: 100%; }
+
+        .bot-typing { border-right: 10px solid #0f0; animation: blink-cursor 0.4s step-end infinite; color: #fff; }
+        @keyframes blink-cursor { 50% { border-color: transparent; } }
+
+        .logo-target { filter: sepia(100%) hue-rotate(90deg) brightness(1.2) contrast(1.2); mix-blend-mode: screen; }
+        
+        /* Specialized Visuals */
+        .ms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; width: 40px; height: 40px; }
+        .ms-grid div { background: #0f0; }
+        .bk-logo { border: 4px solid #0f0; border-bottom-width: 8px; width: 45px; height: 35px; position: relative; }
+        .bk-logo::before { content: ''; position: absolute; top: -10px; left: -5px; width: 55px; height: 4px; background: #0f0; }
+    </style>
+</head>
+<body class="crt h-screen w-screen flex flex-col">
+
+    <div class="scanline"></div>
+
+    <!-- MENU SCREEN -->
+    <div id="menu-screen" class="flex-1 flex flex-col items-center justify-center p-4 z-10">
+        <h1 class="text-6xl md:text-9xl mb-2 glitch-text tracking-tighter">ANON_LINK v4.0</h1>
+        <p class="text-xl mb-12 opacity-60 tracking-[0.5em] font-light">REMOTE INFILTRATION SYSTEM</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
+            <button onclick="startHack('CIA', 'CIA_INTEL_NODE')" class="btn-hacker text-xl font-bold">
+                <i class="fas fa-user-secret mr-3"></i> CIA CENTRAL DB
+            </button>
+            <button onclick="startHack('NASA', 'DEEP_SPACE_NETWORK')" class="btn-hacker text-xl font-bold">
+                <i class="fas fa-shuttle-space mr-3"></i> NASA SAT-UPLINK
+            </button>
+            <button onclick="startHack('MICROSOFT', 'MSFT_AZURE_CORE')" class="btn-hacker text-xl font-bold">
+                <i class="fab fa-windows mr-3"></i> MICROSOFT CLOUD
+            </button>
+            <button onclick="startHack('BANCHE', 'SWIFT_BACKBONE')" class="btn-hacker text-xl font-bold">
+                <i class="fas fa-vault mr-3"></i> GLOBAL BANKING
+            </button>
+        </div>
+        <div class="mt-12 text-[10px] opacity-30 animate-pulse uppercase tracking-widest">
+            Waiting for secure handshake...
+        </div>
+    </div>
+
+    <!-- HACKING SCREEN -->
+    <div id="hack-screen" class="hidden absolute inset-0 z-20 flex flex-col p-4 bg-black">
+        <div class="flex justify-between border-b border-green-900 pb-2 mb-2">
+            <div>
+                <h2 id="target-display" class="text-2xl font-bold tracking-widest uppercase">ESTABLISHING CONNECTION...</h2>
+                <div id="status-line" class="text-xs opacity-50 uppercase">Status: Initializing handshake protocols...</div>
+            </div>
+            <div class="text-right">
+                <div id="timer" class="text-2xl font-mono">00:00:00</div>
+                <div id="bot-status" class="text-[10px] text-yellow-500">BOT AGENT: ACTIVE</div>
+            </div>
+        </div>
+
+        <div class="flex-1 flex overflow-hidden relative">
+            <!-- Console -->
+            <div id="terminal" class="w-full md:w-3/4 overflow-hidden font-mono text-sm md:text-lg leading-snug p-2"></div>
+            
+            <!-- Dashboard Right -->
+            <div class="hidden md:flex w-1/4 flex-col gap-4 pl-4 border-l border-green-900">
+                <div class="border border-green-900 p-2 bg-zinc-950">
+                    <div class="text-[10px] opacity-50 uppercase">Encrypted Data Packet</div>
+                    <div id="data-val" class="text-2xl font-bold">0.00 MB</div>
+                </div>
+                <div class="border border-green-900 p-2 flex-1 flex flex-col bg-zinc-950">
+                    <div class="text-[10px] opacity-50 uppercase mb-4">Remote Visual Node</div>
+                    <div id="side-visual" class="flex-1 flex flex-col items-center justify-center opacity-60">
+                        <i class="fas fa-network-wired text-5xl animate-pulse"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pop-up Layer -->
+            <div id="popup-layer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+        </div>
+
+        <!-- Progress Footer -->
+        <div class="mt-4 bg-black p-2 border-t border-green-900">
+            <div class="flex justify-between text-[10px] mb-1 font-bold">
+                <span id="activity-label" class="uppercase">INFILTRATING_DATA_STREAM</span>
+                <span id="perc-val">0%</span>
+            </div>
+            <div class="w-full bg-zinc-900 h-3 border border-green-900 p-[1px]">
+                <div id="progress-bar" class="h-full bg-green-500 w-0 transition-all duration-200"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="hidden absolute inset-0 z-40 bg-black flex items-center justify-center p-4">
+        <div class="border border-green-500 p-10 w-full max-w-xl bg-black shadow-[0_0_50px_rgba(0,255,0,0.2)] text-center">
+            <div class="mb-6 inline-block p-4 border-2 border-green-500 rounded-full animate-bounce">
+                <i class="fas fa-skull text-5xl"></i>
+            </div>
+            <h2 class="text-5xl font-bold mb-4 tracking-tighter">OPERATION SUCCESSFUL</h2>
+            <p class="opacity-60 mb-10 text-xl">The target node has been fully compromised and cleaned.</p>
+            <div class="text-left bg-zinc-950 p-6 font-mono text-base mb-10 border border-green-900 space-y-2">
+                <div>> TARGET_NODE: <span id="final-target" class="text-white"></span></div>
+                <div>> DATA_EXTRACTED: <span id="final-data" class="text-white"></span></div>
+                <div>> TRACE_SIGNATURE: <span class="text-red-500">WIPED</span></div>
+                <div>> EXIT_STATUS: <span class="text-green-400">0x0 (OK)</span></div>
+            </div>
+            <button onclick="resetApp()" class="btn-hacker w-full text-2xl font-bold uppercase tracking-widest">
+                TERMINATE SESSION
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const popupLayer = document.getElementById('popup-layer');
+        const sideVisual = document.getElementById('side-visual');
+        
+        let state = {
+            progress: 0,
+            data: 0,
+            isBotTyping: false,
+            target: '',
+            intervals: []
+        };
+
+        const logs = [
+            "Socket connection established...", "Analyzing TCP packets...", "Bypassing hardware firewall...",
+            "Injecting buffer overflow...", "Accessing hash table...", "Decrypting AES salt...",
+            "Searching for 0-day exploit...", "Escalating root privileges...", "Mapping subnet topology...",
+            "Brute-forcing admin credentials...", "Intercepting SSL traffic...", "Modifying system registry...",
+            "Patching kernel vulnerability...", "Cloning remote database...", "Disabling IDS notification...",
+            "Rerouting DNS through Tor...", "Opening reverse shell..."
+        ];
+
+        const targetData = {
+            'CIA': { color: 'text-blue-500', html: '<i class="fas fa-building-columns text-6xl"></i>', label: 'CIA_MAINFRAME_V4' },
+            'NASA': { color: 'text-orange-500', html: '<i class="fas fa-satellite-dish text-6xl"></i>', label: 'NASA_JPL_UPLINK' },
+            'MICROSOFT': { color: 'text-sky-500', html: '<div class="ms-grid"><div></div><div></div><div></div><div></div></div>', label: 'AZURE_HYPER_CORE' },
+            'BANCHE': { color: 'text-yellow-600', html: '<div class="bk-logo"></div>', label: 'SWIFT_INT_GATEWAY' }
+        };
+
+        const popupTemplates = [
+            { title: 'CRITICAL ERROR', content: 'Admin attempted to kill the process. Counter-measures active.' },
+            { title: 'INTRUSION DETECTED', content: 'IDS alert bypassed. Redirecting traffic via proxy.' },
+            { title: 'RSA KEY DECRYPTED', content: 'Key: 0x821...AA901 extracted from memory heap.' },
+            { title: 'TRACE WARNING', content: 'Signal triangulation detected: Langley, VA. Switching node.' },
+            { title: 'PACKET_LOST', content: 'CRC Checksum mismatch on block 0xAF. Retrying...' }
+        ];
+
+        function addLog(text, isBot = false) {
+            const line = document.createElement('div');
+            if (isBot) {
+                line.innerHTML = `<span class="text-white font-bold tracking-widest">[BOT_EXEC]> </span><span class="bot-typing"></span>`;
+                line.classList.add('my-2', 'bg-zinc-900', 'p-1');
+            } else {
+                line.innerHTML = `<span class="opacity-40">[${new Date().toLocaleTimeString()}]</span> <span class="ml-2">${text}</span>`;
+            }
+            terminal.appendChild(line);
+            
+            // Auto-scroll logic
+            terminal.scrollTop = terminal.scrollHeight;
+            
+            // Limit terminal lines
+            if (terminal.children.length > 25) terminal.removeChild(terminal.firstChild);
+            
+            return isBot ? line.querySelector('.bot-typing') : null;
+        }
+
+        async function botTypingEffect() {
+            if (state.isBotTyping) return;
+            state.isBotTyping = true;
+            
+            const commands = [
+                "ssh root@central_hub -p 443 --bypass-auth",
+                "sudo rm -rf /sys/logs/remote_trace.log",
+                "grep -r 'admin_pass' ./secure_config/",
+                "nmap -v -sS -A 10.0.0.254",
+                "cat /etc/shadow | grep admin",
+                "python3 exploit.py --target 127.0.0.1"
+            ];
+            
+            const cmd = commands[Math.floor(Math.random() * commands.length)];
+            const span = addLog(cmd, true);
+            
+            for(let char of cmd) {
+                span.textContent += char;
+                terminal.scrollTop = terminal.scrollHeight; // Keep following typing
+                await new Promise(r => setTimeout(r, 40 + Math.random() * 60));
+            }
+            
+            await new Promise(r => setTimeout(r, 800)); // Pause after finishing
+            span.classList.remove('bot-typing');
+            state.isBotTyping = false;
+        }
+
+        function spawnPopup(type = 'system') {
+            const popup = document.createElement('div');
+            popup.className = "hack-window absolute w-64 md:w-80 p-2 pointer-events-none";
+            popup.style.left = (5 + Math.random() * 65) + "%";
+            popup.style.top = (10 + Math.random() * 60) + "%";
+
+            if (type === 'system') {
+                const tpl = popupTemplates[Math.floor(Math.random() * popupTemplates.length)];
+                popup.innerHTML = `<div class="window-header">${tpl.title}</div><div class="p-3 text-sm font-mono">${tpl.content}</div>`;
+            } else {
+                const visual = targetData[state.target];
+                popup.innerHTML = `<div class="window-header">LIVE_ASSET_FOUND</div>
+                                  <div class="p-6 flex flex-col items-center bg-black border-t border-green-900 ${visual.color}">
+                                    <div class="logo-target shadow-inner">${visual.html}</div>
+                                    <div class="text-[10px] mt-4 opacity-50 uppercase tracking-widest font-mono">NODE_HASH: ${Math.random().toString(16).slice(2,12)}</div>
+                                  </div>`;
+            }
+
+            popupLayer.appendChild(popup);
+            setTimeout(() => {
+                popup.style.opacity = '0';
+                popup.style.transform = 'translateY(-20px)';
+                popup.style.transition = '0.5s';
+                setTimeout(() => popup.remove(), 500);
+            }, 4000);
+        }
+
+        function startHack(targetKey, display) {
+            state.target = targetKey;
+            document.getElementById('menu-screen').classList.add('hidden');
+            document.getElementById('hack-screen').classList.remove('hidden');
+            document.getElementById('target-display').innerText = "TARGET_NODE: " + display;
+            
+            const visual = targetData[targetKey];
+            sideVisual.innerHTML = `<div class="${visual.color} flex flex-col items-center">
+                                       <div class="logo-target scale-125">${visual.html}</div>
+                                       <div class="mt-8 text-sm font-bold tracking-widest uppercase">${visual.label}</div>
+                                       <div class="text-[8px] opacity-40 mt-1 uppercase tracking-tighter">Connected via Node-${Math.floor(Math.random()*99)}</div>
+                                    </div>`;
+
+            // Main loop - Faster
+            const mainInt = setInterval(() => {
+                if (state.isBotTyping) return;
+                
+                state.progress += Math.random() * 0.6;
+                state.data += Math.random() * 2.8;
+
+                document.getElementById('progress-bar').style.width = state.progress + "%";
+                document.getElementById('perc-val').innerText = Math.floor(state.progress) + "%";
+                document.getElementById('data-val').innerText = state.data.toFixed(2) + " MB";
+
+                if (Math.random() > 0.65) addLog(logs[Math.floor(Math.random() * logs.length)]);
+
+                if (state.progress >= 100) finishHack();
+            }, 120);
+
+            // Bot loop - More active
+            const botInt = setInterval(() => {
+                if (Math.random() > 0.7) botTypingEffect();
+            }, 3000);
+
+            // Pop-up loop - Much more frequent
+            const popInt = setInterval(() => {
+                if (Math.random() > 0.5) spawnPopup(Math.random() > 0.4 ? 'system' : 'visual');
+            }, 2000);
+
+            // Timer
+            let start = Date.now();
+            const timeInt = setInterval(() => {
+                let diff = new Date(Date.now() - start);
+                document.getElementById('timer').innerText = diff.toISOString().substr(11, 8);
+            }, 1000);
+
+            state.intervals = [mainInt, botInt, popInt, timeInt];
+        }
+
+        function finishHack() {
+            state.intervals.forEach(clearInterval);
+            document.getElementById('hack-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-target').innerText = state.target + " CORE";
+            document.getElementById('final-data').innerText = state.data.toFixed(2) + " MB";
+        }
+
+        function resetApp() {
+            state.intervals.forEach(clearInterval);
+            state.progress = 0;
+            state.data = 0;
+            state.isBotTyping = false;
+            terminal.innerHTML = '';
+            popupLayer.innerHTML = '';
+            document.getElementById('progress-bar').style.width = "0%";
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('hack-screen').classList.add('hidden');
+            document.getElementById('menu-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

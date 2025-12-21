@@ -70,6 +70,13 @@ const allProjects = [
     },
     {
         category: "coding",
+        title: "Hacker Simulator", // PROGETTO LOCALE
+        image: "images/cod5.jpg",
+        description: "Simula un attacco hacker con questo gioco.",
+        url: "projects/hacker/index.html" // <-- LINK RELATIVO (LOCALE)
+    },
+    {
+        category: "coding",
         title: "Scrittura Veloce", // PROGETTO VERCEL
         image: "images/cod3.jpg",
         description: "Dashboard React per monitorare le crypto in tempo reale.",

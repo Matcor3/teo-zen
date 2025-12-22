@@ -41,6 +41,54 @@ const allProjects = [
     },
     {
         category: "art",
+        title: "Keta",
+        image: "images/art4.jpg",
+        description: "Collage psichedelico."
+    },
+    {
+        category: "art",
+        title: "Outside the door",
+        image: "images/art5.jpg",
+        description: "Collage con paesaggi naturali."
+    },
+    {
+        category: "art",
+        title: "Incrocio",
+        image: "images/art6.jpg",
+        description: "Quadro astratto fatto con vernice acrilica."
+    },
+    {
+        category: "art",
+        title: "Paesaggio strano",
+        image: "images/art7.jpg",
+        description: "Paesaggio astratto con vernice acrilica."
+    },
+    {
+        category: "art",
+        title: "Buco colorato",
+        image: "images/art8.jpg",
+        description: "Buco non del tutto nero con vernice acrilica."
+    },
+    {
+        category: "art",
+        title: "Diverso",
+        image: "images/art9.jpg",
+        description: "Collage di esseri anormali."
+    },
+    {
+        category: "art",
+        title: "Escape",
+        image: "images/art10.jpg",
+        description: "Collage dinamico di uscita."
+    },
+    {
+        category: "art",
+        title: "Relax",
+        image: "images/art11.jpg",
+        description: "Collage rilassante."
+    },
+    {
+        category: "art",
         title: "Grime face",
         image: "images/art3.jpg",
         description: "Grime effect su ritratto digitale."
